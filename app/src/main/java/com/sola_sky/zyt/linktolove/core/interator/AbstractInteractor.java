@@ -1,6 +1,6 @@
 package com.sola_sky.zyt.linktolove.core.interator;
 
-import android.support.annotation.NonNull;
+
 
 import com.sola_sky.zyt.linktolove.core.executor.BackgroundRun;
 

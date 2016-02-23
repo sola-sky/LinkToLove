@@ -3,6 +3,7 @@ package com.sola_sky.zyt.linktolove.features.Login;
 import com.sola_sky.zyt.linktolove.core.executor.BackgroundRun;
 import com.sola_sky.zyt.linktolove.core.interator.AbstractInteractor;
 import com.sola_sky.zyt.linktolove.core.interator.Interactor;
+import com.sola_sky.zyt.linktolove.core.repository.DataRepository;
 
 /**
  * Created by Li on 2016/2/23.
@@ -21,7 +22,12 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.Callb
             public void exectue(AbstractInteractor interactor) {
 
             }
-        }, this);
+        }, this, new DataRepository() {
+            @Override
+            public String getMessage() {
+                return null;
+            }
+        });
         interactor.execute();
     }
 
@@ -31,7 +37,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.Callb
     }
 
     @Override
-    public void onLoginFailure(String error) {
+    public void onLoginFailure() {
         mView.loginError();
     }
 }

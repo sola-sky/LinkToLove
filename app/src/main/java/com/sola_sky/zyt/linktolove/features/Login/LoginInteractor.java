@@ -8,6 +8,6 @@ import com.sola_sky.zyt.linktolove.core.interator.Interactor;
 public interface LoginInteractor extends Interactor {
     interface Callback {
         void onLoginSuccess(String message);
-        void onLoginFailure(String error);
+        void onLoginFailure();
     }
 }
