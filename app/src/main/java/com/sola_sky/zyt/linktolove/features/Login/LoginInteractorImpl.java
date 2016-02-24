@@ -20,6 +20,9 @@ public class LoginInteractorImpl extends AbstractInteractor implements LoginInte
         mRepository = dataRepository;
     }
 
+
+
+
     private void postMessage(final String msg) {
         mCallback.onLoginSuccess(msg);
     }
