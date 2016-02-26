@@ -19,7 +19,7 @@ public class ExecutorImpl implements BaseExecutor {
                 new LinkedBlockingQueue<Runnable>());
     }
     @Override
-    public void exectue(final AbstractInteractor interactor) {
+    public void execute(final AbstractInteractor interactor) {
         mThreadPoolExecutor.submit(new Runnable() {
             @Override
             public void run() {
