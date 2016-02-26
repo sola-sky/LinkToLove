@@ -8,7 +8,7 @@ import com.sola_sky.zyt.linktolove.presenter.BaseView;
  */
 public interface LoginPresenter extends BasePresenter {
     interface View extends BaseView {
-        void loginSuccess();
+        void loginSuccess(String msg);
         void loginError();
     }
 }

@@ -1,13 +1,11 @@
 package com.sola_sky.zyt.linktolove;
 
-import com.sola_sky.zyt.linktolove.core.executor.BackgroundRun;
-import com.sola_sky.zyt.linktolove.core.interator.AbstractInteractor;
+import com.sola_sky.zyt.linktolove.core.executor.BaseExecutor;
 import com.sola_sky.zyt.linktolove.core.repository.DataRepository;
 import com.sola_sky.zyt.linktolove.features.Login.LoginInteractor;
 import com.sola_sky.zyt.linktolove.features.Login.LoginInteractorImpl;
 
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.mockito.Mockito.mock;
@@ -25,7 +23,7 @@ public class LoginMessageTest {
         DataRepository mRepository = mock(DataRepository.class);
         when(mRepository.getMessage()).thenReturn(msg);
 
-        BackgroundRun run = mock(BackgroundRun.class);
+        BaseExecutor run = mock(BaseExecutor.class);
         LoginInteractor.Callback mCallback = mock(LoginInteractor.Callback.class);
 
         LoginInteractorImpl interactor = new LoginInteractorImpl(run, mCallback, mRepository);

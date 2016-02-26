@@ -1,8 +1,13 @@
 package com.sola_sky.zyt.linktolove.features.Login;
 
-import com.sola_sky.zyt.linktolove.core.executor.BackgroundRun;
+import com.sola_sky.zyt.linktolove.core.executor.BaseExecutor;
+import com.sola_sky.zyt.linktolove.core.executor.MainThread;
+import com.sola_sky.zyt.linktolove.core.executor.impl.ExecutorImpl;
+import com.sola_sky.zyt.linktolove.core.executor.impl.MainThreadImpl;
 import com.sola_sky.zyt.linktolove.core.interator.AbstractInteractor;
 import com.sola_sky.zyt.linktolove.core.repository.DataRepository;
+
+import java.util.concurrent.Executor;
 
 /**
  * Created by Li on 2016/2/21.
@@ -11,29 +16,43 @@ public class LoginInteractorImpl extends AbstractInteractor implements LoginInte
 
     private LoginInteractor.Callback mCallback;
     private DataRepository mRepository;
+    private MainThread mMainThread;
 
 
-    public LoginInteractorImpl(BackgroundRun executor, LoginInteractor.Callback callback,
+    public LoginInteractorImpl(LoginInteractor.Callback callback,
                                DataRepository dataRepository ) {
-        super(executor);
+        super(ExecutorImpl.getInstance());
         mCallback = callback;
         mRepository = dataRepository;
+        mMainThread = MainThreadImpl.getInstance();
     }
 
 
 
 
     private void postMessage(final String msg) {
-        mCallback.onLoginSuccess(msg);
+        mMainThread.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.onLoginSuccess(msg);
+            }
+        });
+
     }
 
     private void notifyError() {
-        mCallback.onLoginFailure();
+        mMainThread.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.onLoginFailure();
+            }
+        });
+
     }
 
     @Override
     public void run() {
-        String msg = mRepository.getMessage();
+        String msg = (String)mRepository.getData();
         if (msg == null || msg.length() == 0) {
            notifyError();
         } else {
