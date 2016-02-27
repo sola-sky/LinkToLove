@@ -26,7 +26,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
 
     private NotificationEnable mBtnEnable;
 
-    private ValueAnimator mAnimator;
+  //  private ValueAnimator mAnimator;
     @Override
     public int getLayoutId() {
         return R.layout.activity_login;
@@ -34,7 +34,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
 
     @Override
     public void initMember() {
-        mPresenter = new LoginPresenterImpl(this);
+        mPresenter = new LoginPresenterImpl(this, new UserInfo(null, null));
 
     }
 
@@ -43,7 +43,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mRootLly = (LinearLayout)findViewById(R.id.lly_root);
+   //     mRootLly = (LinearLayout)findViewById(R.id.lly_root);
         mAccountEt = (EditText) findViewById(R.id.et_login_account);
         mPasswordEt = (EditText) findViewById(R.id.et_login_password);
         mLoginBtn = (Button) findViewById(R.id.btn_login_login);
@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
     @Override
     public void initWidget() {
 
-        mRootLly.animate().translationYBy(-1).setDuration(10000).start();
+     //   mRootLly.animate().translationYBy(-1).setDuration(10000).start();
 //        mAnimator = ValueAnimator.ofFloat(-1, 1);
 //        mAnimator.setDuration(20000);
 //        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -126,7 +126,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
     }
 
     @Override
-    public void loginSuccess() {
+    public void loginSuccess(String msg) {
 
     }
 

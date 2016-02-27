@@ -22,11 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/lly_root"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,6 +55,11 @@
         android:layout_height="wrap_content"
         android:text="@string/activity_login_login_login"
         android:layout_gravity="center_horizontal"/>
-    </LinearLayout>
+
+
+    <com.sola_sky.zyt.linktolove.view.CircleProgressBar
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
