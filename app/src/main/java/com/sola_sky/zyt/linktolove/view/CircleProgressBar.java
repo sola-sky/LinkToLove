@@ -1,12 +1,14 @@
 package com.sola_sky.zyt.linktolove.view;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 /**
  * Created by Li on 2016/2/27.
@@ -21,6 +23,14 @@ public class CircleProgressBar extends View {
     private int drawColor = 0xff0000;
     private int mWidth;
     private int mHeight;
+    private int mCenterX;
+    private int mCenterY;
+    private double mDegree = 0.0;
+    private ValueAnimator mRadiusAnimator;
+    private ValueAnimator mColorAnimator;
+    private float mIncrease;
+    private boolean isFirstDraw = true;
+    private int mColor = 0xff0000ff;
 
     public CircleProgressBar(Context context) {
         super(context);
@@ -39,10 +49,43 @@ public class CircleProgressBar extends View {
 
 
     private void init() {
+
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.GREEN);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
+
+    }
+
+    private void startColorAnimation() {
+        mColorAnimator = ValueAnimator.ofInt(0xff0000ff, 0xff00ffff);
+        mColorAnimator.setDuration(10000);
+        mColorAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        mColorAnimator.setRepeatMode(ValueAnimator.RESTART);
+        mColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mColor = (int) animation.getAnimatedValue();
+                invalidate();;
+            }
+        });
+        mColorAnimator.setInterpolator(new LinearInterpolator());
+        mColorAnimator.start();
+    }
+    private void startAnimation() {
+        mRadiusAnimator = ValueAnimator.ofFloat(0, 35);
+        mRadiusAnimator.setDuration(1000);
+        mRadiusAnimator.setRepeatMode(ValueAnimator.RESTART);
+        mRadiusAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        mRadiusAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mIncrease = (float) animation.getAnimatedValue();
+                invalidate();
+            }
+        });
+       mRadiusAnimator.setInterpolator(new LinearInterpolator());
+        mRadiusAnimator.start();
     }
 
     @Override
@@ -54,54 +97,112 @@ public class CircleProgressBar extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mWidth = w;
         mHeight = h;
+        mCenterX = mWidth / 2;
+        mCenterY = mHeight / 2;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        mPaint.setColor(mColor);
         canvas.drawColor(0xFFF29B76);
-        canvas.drawCircle(mWidth / 2, mHeight / 2 - mDistance, 30, mPaint);
+        moveByRotate(canvas);
+        if (isFirstDraw) {
+            isFirstDraw = false;
+            startColorAnimation();
+        }
 
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.rotate(-45);
-        canvas.drawCircle(mDistance, 0, 35, mPaint);
-        canvas.restore();
 
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.drawCircle(mDistance, 0, 40, mPaint);
-        canvas.restore();
+//        canvas.drawCircle(mWidth / 2, mHeight / 2 - mDistance, 30, mPaint);
+//
+//        canvas.save();
+//        canvas.translate(mWidth / 2, mHeight / 2);
+//        canvas.rotate(-45);
+//        canvas.drawCircle(mDistance, 0, 35, mPaint);
+//        canvas.restore();
+//
+//        canvas.save();
+//        canvas.translate(mWidth / 2, mHeight / 2);
+//        canvas.drawCircle(mDistance, 0, 40, mPaint);
+//        canvas.restore();
+//
+//        canvas.save();
+//        canvas.translate(mWidth / 2, mHeight / 2);
+//        canvas.rotate(45);
+//        canvas.drawCircle(mDistance, 0, 45, mPaint);
+//        canvas.restore();
+//
+//        canvas.save();
+//        canvas.translate(mWidth / 2, mHeight / 2);
+//        canvas.rotate(90);
+//        canvas.drawCircle(mDistance, 0, 50, mPaint);
+//        canvas.restore();
+//
+//        canvas.save();
+//        canvas.translate(mWidth / 2, mHeight / 2);
+//        canvas.rotate(135);
+//        canvas.drawCircle(mDistance, 0, 55, mPaint);
+//        canvas.restore();
+//
+//        canvas.save();
+//        canvas.translate(mWidth / 2, mHeight / 2);
+//        canvas.rotate(180);
+//        canvas.drawCircle(mDistance, 0, 60, mPaint);
+//        canvas.restore();
+//
+//        canvas.save();
+//        canvas.translate(mWidth / 2, mHeight / 2);
+//        canvas.rotate(225);
+//        canvas.drawCircle(mDistance, 0, 65, mPaint);
+//        canvas.restore();
 
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.rotate(45);
-        canvas.drawCircle(mDistance, 0, 45, mPaint);
-        canvas.restore();
+    }
 
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.rotate(90);
-        canvas.drawCircle(mDistance, 0, 50, mPaint);
-        canvas.restore();
+    private float calculateRadius(float radius, float increase) {
+        float temp = radius + increase;
+        if (temp > 65) {
+            temp -= 30;
+        }
+        return temp;
+    }
+    private void drawCircle(Canvas canvas, float distance, double degree, float radius) {
+        canvas.drawCircle((float)(mCenterX + distance * Math.cos(degree)),
+                (float)(mCenterY - distance * Math.sin(degree)), radius, mPaint);
+        mDegree += Math.PI / 4;
+    }
 
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.rotate(135);
-        canvas.drawCircle(mDistance, 0, 55, mPaint);
-        canvas.restore();
+    private void moveByIncrease(Canvas canvas) {
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(30, mIncrease));
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(35, mIncrease));
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(40, mIncrease));
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(45, mIncrease));
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(50, mIncrease));
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(55, mIncrease));
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(60, mIncrease));
+        drawCircle(canvas, mDistance, mDegree, calculateRadius(65, mIncrease));
+        Log.d("I:", mIncrease+"");
+        if (isFirstDraw) {
+            isFirstDraw = false;
+            startAnimation();
+        }
+    }
 
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.rotate(180);
-        canvas.drawCircle(mDistance, 0, 60, mPaint);
-        canvas.restore();
-
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.rotate(225);
-        canvas.drawCircle(mDistance, 0, 65, mPaint);
-        canvas.restore();
-
+    private void moveByRotate(Canvas canvas) {
+        if (mDegree <= -2 * Math.PI) {
+            mDegree = 0;
+        }
+        mDegree -= Math.PI / 4;
+        double temp = mDegree;
+        drawCircle(canvas, mDistance, mDegree, 30);
+        drawCircle(canvas, mDistance, mDegree, 35);
+        drawCircle(canvas, mDistance, mDegree, 40);
+        drawCircle(canvas, mDistance, mDegree, 45);
+        drawCircle(canvas, mDistance, mDegree, 50);
+        drawCircle(canvas, mDistance, mDegree, 55);
+        drawCircle(canvas, mDistance, mDegree, 60);
+        drawCircle(canvas, mDistance, mDegree, 65);
+        mDegree = temp;
+        postInvalidateDelayed(100);
     }
 }
