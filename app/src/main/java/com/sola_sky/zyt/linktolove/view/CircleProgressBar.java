@@ -1,14 +1,23 @@
 package com.sola_sky.zyt.linktolove.view;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.AlarmManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Looper;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+
+import android.os.Handler;
+
+
 
 /**
  * Created by Li on 2016/2/27.
@@ -30,7 +39,19 @@ public class CircleProgressBar extends View {
     private ValueAnimator mColorAnimator;
     private float mIncrease;
     private boolean isFirstDraw = true;
-    private int mColor = 0xff0000ff;
+    private Handler mHandler;
+
+    private String mColor;
+
+    public String getColor() {
+        return mColor;
+    }
+
+    public void setColor(String color) {
+        mColor = color;
+        mPaint.setColor(Color.parseColor(color));
+        invalidate();
+    }
 
     public CircleProgressBar(Context context) {
         super(context);
@@ -54,23 +75,31 @@ public class CircleProgressBar extends View {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.GREEN);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setColor(0xff00ff00);
+        mHandler = new Handler(Looper.getMainLooper());
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (mDegree <= -2 * Math.PI) {
+                    mDegree = 0;
+                }
+                mDegree -= Math.PI / 4;
+                mHandler.sendEmptyMessageDelayed(1, 100);
+            }
+        };
+        mHandler.sendEmptyMessageDelayed(1, 100);
 
     }
 
     private void startColorAnimation() {
-        mColorAnimator = ValueAnimator.ofInt(0xff0000ff, 0xff00ffff);
-        mColorAnimator.setDuration(10000);
-        mColorAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        mColorAnimator.setRepeatMode(ValueAnimator.RESTART);
-        mColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mColor = (int) animation.getAnimatedValue();
-                invalidate();;
-            }
-        });
-        mColorAnimator.setInterpolator(new LinearInterpolator());
-        mColorAnimator.start();
+        final ObjectAnimator anim = ObjectAnimator.ofObject(this, "color", new ColorEvalutor(),
+                "#ffffff", "#00ff00");
+        anim.setDuration(5000);
+        anim.setRepeatMode(ObjectAnimator.REVERSE);
+        anim.setRepeatCount(ObjectAnimator.INFINITE);
+        anim.setInterpolator(new LinearInterpolator());
+        anim.start();
     }
     private void startAnimation() {
         mRadiusAnimator = ValueAnimator.ofFloat(0, 35);
@@ -104,8 +133,6 @@ public class CircleProgressBar extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        mPaint.setColor(mColor);
         canvas.drawColor(0xFFF29B76);
         moveByRotate(canvas);
         if (isFirstDraw) {
@@ -189,10 +216,7 @@ public class CircleProgressBar extends View {
     }
 
     private void moveByRotate(Canvas canvas) {
-        if (mDegree <= -2 * Math.PI) {
-            mDegree = 0;
-        }
-        mDegree -= Math.PI / 4;
+
         double temp = mDegree;
         drawCircle(canvas, mDistance, mDegree, 30);
         drawCircle(canvas, mDistance, mDegree, 35);
@@ -203,6 +227,6 @@ public class CircleProgressBar extends View {
         drawCircle(canvas, mDistance, mDegree, 60);
         drawCircle(canvas, mDistance, mDegree, 65);
         mDegree = temp;
-        postInvalidateDelayed(100);
+    //    postInvalidateDelayed(100);
     }
 }
