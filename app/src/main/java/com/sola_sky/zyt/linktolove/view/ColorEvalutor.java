@@ -8,13 +8,28 @@ import android.content.pm.PackageManager;
  */
 public class ColorEvalutor implements TypeEvaluator {
     private int mCurrentRed = -1;
+
+    public void setmCurrentRed(int mCurrentRed) {
+        this.mCurrentRed = mCurrentRed;
+    }
+
+    public void setmCurrentGreen(int mCurrentGreen) {
+        this.mCurrentGreen = mCurrentGreen;
+    }
+
+    public void setmCurrentBlue(int mCurrentBlue) {
+        this.mCurrentBlue = mCurrentBlue;
+    }
+
     private int mCurrentGreen = -1;
     private int mCurrentBlue = -1;
 
     @Override
     public Object evaluate(float fraction, Object startValue, Object endValue) {
         String startColor = (String) startValue;
+        System.out.println("startColor:" + startColor);
         String endColor = (String) endValue;
+        System.out.println("endColor");
         int startRed = Integer.parseInt(startColor.substring(1, 3), 16);
         int startGreen = Integer.parseInt(startColor.substring(3, 5), 16);
         int startBlue = Integer.parseInt(startColor.substring(5, 7), 16);
@@ -41,12 +56,17 @@ public class ColorEvalutor implements TypeEvaluator {
         } else if (mCurrentGreen != endGreen) {
             mCurrentGreen = getCurrentColor(startGreen, endGreen, colorDiff, redDiff, fraction);
         } else if (mCurrentBlue != endBlue) {
+
             mCurrentBlue = getCurrentColor(startBlue, endBlue, colorDiff, redDiff + greenDiff,
                     fraction);
         }
 
         String currentColor = "#" + getHexString(mCurrentRed) + getHexString(mCurrentGreen)
                 + getHexString(mCurrentBlue);
+        System.out.println(mCurrentBlue);
+        System.out.println(mCurrentRed);
+        System.out.println(mCurrentGreen);
+        System.out.println(currentColor);
         return currentColor;
     }
 
@@ -63,6 +83,11 @@ public class ColorEvalutor implements TypeEvaluator {
             if (currentColor > endColor) {
                 currentColor = endColor;
             }
+        }
+        if (currentColor > 255) {
+            currentColor = 255;
+        } else if (currentColor < 0) {
+            currentColor = 0;
         }
         return currentColor;
     }
