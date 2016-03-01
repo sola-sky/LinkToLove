@@ -1,8 +1,8 @@
 package com.sola_sky.zyt.linktolove.view;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.AlarmManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,7 +12,6 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 import android.os.Handler;
@@ -36,19 +35,21 @@ public class CircleProgressBar extends View {
     private int mCenterY;
     private double mDegree = 0.0;
     private ValueAnimator mRadiusAnimator;
-    private ValueAnimator mColorAnimator;
+    private ObjectAnimator mColorAnimator;
     private float mIncrease;
     private boolean isFirstDraw = true;
     private Handler mHandler;
 
-    private String mColor;
+
+    private ColorEvalutor mEvalutor;
+    private String color;
 
     public String getColor() {
-        return mColor;
+        return color;
     }
 
     public void setColor(String color) {
-        mColor = color;
+        this.color = color;
         mPaint.setColor(Color.parseColor(color));
         invalidate();
     }
@@ -70,7 +71,7 @@ public class CircleProgressBar extends View {
 
 
     private void init() {
-
+        mEvalutor = new ColorEvalutor();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.GREEN);
@@ -93,13 +94,36 @@ public class CircleProgressBar extends View {
     }
 
     private void startColorAnimation() {
-        final ObjectAnimator anim = ObjectAnimator.ofObject(this, "color", new ColorEvalutor(),
+        mColorAnimator = ObjectAnimator.ofObject(this, "color", mEvalutor,
                 "#ffffff", "#00ff00");
-        anim.setDuration(5000);
-        anim.setRepeatMode(ObjectAnimator.REVERSE);
-        anim.setRepeatCount(ObjectAnimator.INFINITE);
-        anim.setInterpolator(new LinearInterpolator());
-        anim.start();
+        mColorAnimator.setDuration(5000);
+        mColorAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+        mColorAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        mColorAnimator.setInterpolator(new LinearInterpolator());
+        mColorAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                mEvalutor.setmCurrentBlue(-1);
+                mEvalutor.setmCurrentGreen(-1);
+                mEvalutor.setmCurrentRed(-1);
+            }
+        });
+        mColorAnimator.start();
     }
     private void startAnimation() {
         mRadiusAnimator = ValueAnimator.ofFloat(0, 35);
