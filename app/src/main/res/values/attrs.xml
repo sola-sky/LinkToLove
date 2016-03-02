@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleProgressBar">
+        <attr name="radius" format="dimension"/>
+        <attr name="start_color" format="string"/>
+        <attr name="end_color" format="string"/>
+        <attr name="type" format="enum">
+            <enum name="Circle" value="0"/>
+            <enum name="Arc" value="1"/>
+        </attr>
+        <attr name="background" format="color|reference"/>
+    </declare-styleable>
+</resources>

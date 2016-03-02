@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 /**
  * Created by Li on 2016/2/29.
  */
-public class ColorEvalutor implements TypeEvaluator {
+public class ColorEvaluator implements TypeEvaluator {
     private int mCurrentRed = -1;
 
     public void setmCurrentRed(int mCurrentRed) {
