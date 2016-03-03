@@ -8,6 +8,6 @@
             <enum name="Circle" value="0"/>
             <enum name="Arc" value="1"/>
         </attr>
-        <attr name="background" format="color|reference"/>
+        <attr name="bg" format="color|reference"/>
     </declare-styleable>
 </resources>
