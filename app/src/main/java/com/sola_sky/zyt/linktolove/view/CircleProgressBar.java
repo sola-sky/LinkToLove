@@ -27,17 +27,16 @@ import com.sola_sky.zyt.linktolove.utils.DimensionUtils;
  */
 public class CircleProgressBar extends View {
 
-    private static final float DEFAULT_RADIUS_DP = 40;
+    private static final float DEFAULT_RADIUS_DP = 50;
+    private static final float DEFAULT_INTERVAL_DP = 2;
     private static final String DEFAULT_START_COLOR = "#00ff00";
     private static final String DEFAULT_END_COLOR = "#f76d09";
-    private static final float DEFAULT_INTERVAL = 2;
 
     private Paint mPaint;
 
 
-    private int mMinRadius;
-    private int mMaxRadius;
-
+    private float mMaxRadius;
+    private float mInterval;
     private float mDistance = 200;
     private String mStartColor;
     private String mEndColor;
@@ -48,14 +47,12 @@ public class CircleProgressBar extends View {
     private int mCenterX;
     private int mCenterY;
     private double mDegree = 0.0;
-    private ValueAnimator mRadiusAnimator;
     private ObjectAnimator mColorAnimator;
     private float mIncrease;
     private boolean isFirstDraw = true;
     private Handler mHandler;
     private int mType;
 
-    private Context mContext;
 
 
     private ColorEvaluator mEvaluator;
@@ -73,26 +70,23 @@ public class CircleProgressBar extends View {
 
     public CircleProgressBar(Context context) {
         super(context);
-        mContext = context;
         init(null);
     }
 
     public CircleProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
         init(attrs);
     }
 
     public CircleProgressBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContext = context;
         init(attrs);
     }
 
 
     private void init(AttributeSet attrs) {
         float radius = DimensionUtils.dp2px(getContext(), DEFAULT_RADIUS_DP);
-
+        mInterval = DimensionUtils.dp2px(getContext(), DEFAULT_INTERVAL_DP);
         TypedArray ta = attrs == null ? null : getContext()
                 .obtainStyledAttributes(attrs, R.styleable.CircleProgressBar);
         if (ta != null) {
@@ -100,9 +94,16 @@ public class CircleProgressBar extends View {
             mStartColor = ta.getString(R.styleable.CircleProgressBar_start_color);
             mEndColor = ta.getString(R.styleable.CircleProgressBar_end_color);
             mType = ta.getInt(R.styleable.CircleProgressBar_type, 0);
-            mBgDrawable = ta.getDrawable(R.styleable.CircleProgressBar_background);
+            mBgDrawable = ta.getDrawable(R.styleable.CircleProgressBar_bg);
             ta.recycle();
         }
+
+        mMaxRadius = (float) (mDistance * Math.sin(1.0 / 18 * Math.PI) * 2);
+        float minRadius = mMaxRadius - 7 * mInterval;
+        if (minRadius <= 0) {
+            mInterval = mMaxRadius  / 7;
+        }
+
 
         if (mStartColor == null) {
             mStartColor = DEFAULT_START_COLOR;
@@ -126,10 +127,10 @@ public class CircleProgressBar extends View {
                     mDegree = 0;
                 }
                 mDegree -= Math.PI / 4;
-                mHandler.sendEmptyMessageDelayed(1, 100);
+                mHandler.sendEmptyMessageDelayed(1, 150);
             }
         };
-        mHandler.sendEmptyMessageDelayed(1, 100);
+
 
     }
 
@@ -165,21 +166,6 @@ public class CircleProgressBar extends View {
         });
         mColorAnimator.start();
     }
-    private void startAnimation() {
-        mRadiusAnimator = ValueAnimator.ofFloat(0, 35);
-        mRadiusAnimator.setDuration(1000);
-        mRadiusAnimator.setRepeatMode(ValueAnimator.RESTART);
-        mRadiusAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        mRadiusAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mIncrease = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-       mRadiusAnimator.setInterpolator(new LinearInterpolator());
-        mRadiusAnimator.start();
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -197,9 +183,7 @@ public class CircleProgressBar extends View {
                 measureWidth = Math.min(measureWidth, widthSize);
             }
         }
-
         setMeasuredDimension(measureWidth, measureWidth);
-
     }
 
 
@@ -219,96 +203,22 @@ public class CircleProgressBar extends View {
         if (isFirstDraw) {
             isFirstDraw = false;
             startColorAnimation();
+            mHandler.sendEmptyMessageDelayed(1, 150);
         }
-
-
-//        canvas.drawCircle(mWidth / 2, mHeight / 2 - mDistance, 30, mPaint);
-//
-//        canvas.save();
-//        canvas.translate(mWidth / 2, mHeight / 2);
-//        canvas.rotate(-45);
-//        canvas.drawCircle(mDistance, 0, 35, mPaint);
-//        canvas.restore();
-//
-//        canvas.save();
-//        canvas.translate(mWidth / 2, mHeight / 2);
-//        canvas.drawCircle(mDistance, 0, 40, mPaint);
-//        canvas.restore();
-//
-//        canvas.save();
-//        canvas.translate(mWidth / 2, mHeight / 2);
-//        canvas.rotate(45);
-//        canvas.drawCircle(mDistance, 0, 45, mPaint);
-//        canvas.restore();
-//
-//        canvas.save();
-//        canvas.translate(mWidth / 2, mHeight / 2);
-//        canvas.rotate(90);
-//        canvas.drawCircle(mDistance, 0, 50, mPaint);
-//        canvas.restore();
-//
-//        canvas.save();
-//        canvas.translate(mWidth / 2, mHeight / 2);
-//        canvas.rotate(135);
-//        canvas.drawCircle(mDistance, 0, 55, mPaint);
-//        canvas.restore();
-//
-//        canvas.save();
-//        canvas.translate(mWidth / 2, mHeight / 2);
-//        canvas.rotate(180);
-//        canvas.drawCircle(mDistance, 0, 60, mPaint);
-//        canvas.restore();
-//
-//        canvas.save();
-//        canvas.translate(mWidth / 2, mHeight / 2);
-//        canvas.rotate(225);
-//        canvas.drawCircle(mDistance, 0, 65, mPaint);
-//        canvas.restore();
-
     }
 
-    private float calculateRadius(float radius, float increase) {
-        float temp = radius + increase;
-        if (temp > 65) {
-            temp -= 30;
-        }
-        return temp;
-    }
     private void drawCircle(Canvas canvas, float distance, double degree, float radius) {
-        canvas.drawCircle((float)(mCenterX + distance * Math.cos(degree)),
-                (float)(mCenterY - distance * Math.sin(degree)), radius, mPaint);
+        canvas.drawCircle((float) (mCenterX + distance * Math.cos(degree)),
+                (float) (mCenterY - distance * Math.sin(degree)), radius, mPaint);
         mDegree += Math.PI / 4;
     }
 
-    private void moveByIncrease(Canvas canvas) {
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(30, mIncrease));
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(35, mIncrease));
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(40, mIncrease));
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(45, mIncrease));
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(50, mIncrease));
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(55, mIncrease));
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(60, mIncrease));
-        drawCircle(canvas, mDistance, mDegree, calculateRadius(65, mIncrease));
-        Log.d("I:", mIncrease+"");
-        if (isFirstDraw) {
-            isFirstDraw = false;
-            startAnimation();
-        }
-    }
-
     private void moveByRotate(Canvas canvas) {
-
         double temp = mDegree;
-        drawCircle(canvas, mDistance, mDegree, 30);
-        drawCircle(canvas, mDistance, mDegree, 35);
-        drawCircle(canvas, mDistance, mDegree, 40);
-        drawCircle(canvas, mDistance, mDegree, 45);
-        drawCircle(canvas, mDistance, mDegree, 50);
-        drawCircle(canvas, mDistance, mDegree, 55);
-        drawCircle(canvas, mDistance, mDegree, 60);
-        drawCircle(canvas, mDistance, mDegree, 65);
+        for (int i = 7; i >= 0; i--) {
+            drawCircle(canvas, mDistance, mDegree, mMaxRadius - mInterval * i);
+        }
         mDegree = temp;
-    //    postInvalidateDelayed(100);
     }
 
     enum Type {
