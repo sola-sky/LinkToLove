@@ -1,6 +1,7 @@
 package com.sola_sky.zyt.linktolove.features.Login;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.sola_sky.zyt.linktolove.R;
 import com.sola_sky.zyt.linktolove.app.BaseActivity;
+import com.sola_sky.zyt.linktolove.features.home.MainActivity;
 
 public class LoginActivity extends BaseActivity implements LoginPresenter.View{
 
@@ -113,9 +115,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   mPresenter.resume();
-                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT)
-                        .show();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }

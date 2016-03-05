@@ -17,21 +17,21 @@ import static org.mockito.Mockito.when;
 public class LoginMessageTest {
 
 
-    @Test
-    public void testLogin() {
-        String msg = "Login Success";
-        DataRepository mRepository = mock(DataRepository.class);
-        when(mRepository.getMessage()).thenReturn(msg);
-
-        BaseExecutor run = mock(BaseExecutor.class);
-        LoginInteractor.Callback mCallback = mock(LoginInteractor.Callback.class);
-
-        LoginInteractorImpl interactor = new LoginInteractorImpl(run, mCallback, mRepository);
-        interactor.run();
-        Mockito.verify(mRepository).getMessage();
-        Mockito.verifyNoMoreInteractions(mRepository);
-        Mockito.verify(mCallback).onLoginSuccess(msg);
-
-    }
+//    @Test
+//    public void testLogin() {
+//        String msg = "Login Success";
+//        DataRepository mRepository = mock(DataRepository.class);
+//        when(mRepository.getMessage()).thenReturn(msg);
+//
+//        BaseExecutor run = mock(BaseExecutor.class);
+//        LoginInteractor.Callback mCallback = mock(LoginInteractor.Callback.class);
+//
+//        LoginInteractorImpl interactor = new LoginInteractorImpl(run, mCallback, mRepository);
+//        interactor.run();
+//        Mockito.verify(mRepository).getMessage();
+//        Mockito.verifyNoMoreInteractions(mRepository);
+//        Mockito.verify(mCallback).onLoginSuccess(msg);
+//
+//    }
 
 }
