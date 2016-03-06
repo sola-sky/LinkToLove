@@ -40,7 +40,12 @@
         <activity
             android:name=".features.home.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".features.home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".features.userinfo.UserInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -121,4 +121,17 @@
         completions."
     </string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_scrolling1">ScrollingActivity1</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- home -->
+    <string name="open_drawer_activity_home">开启导航</string>
+    <string name="close_drawer_activity_home">关闭导航</string>
+    <string name="nav_user_info_activity_home">我</string>
+
+    <!-- user info -->
+    <string name="title_activity_user_info">我</string>
 </resources>

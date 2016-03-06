@@ -18,6 +18,10 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.Callb
     }
     @Override
     public void resume() {
+    }
+
+    @Override
+    public void login() {
         LoginInteractor interactor = new LoginInteractorImpl(this,
                 new LoginDataRepository(mUserInfo));
         interactor.execute();

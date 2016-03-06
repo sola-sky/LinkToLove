@@ -33,7 +33,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
     @Override
     public void initMember() {
         mPresenter = new LoginPresenterImpl(this, new UserInfo(null, null));
-
     }
 
     @Override
@@ -99,7 +98,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentUtils.startHome(LoginActivity.this);
+                mPresenter.login();
             }
         });
     }
@@ -111,7 +110,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.View{
 
     @Override
     public void loginSuccess(String msg) {
-
+        IntentUtils.startHome(this);
+        finish();
     }
 
     @Override

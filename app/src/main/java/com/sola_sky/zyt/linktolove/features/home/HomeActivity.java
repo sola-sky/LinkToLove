@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.sola_sky.zyt.linktolove.R;
 import com.sola_sky.zyt.linktolove.app.BaseActivity;
+import com.sola_sky.zyt.linktolove.utils.IntentUtils;
 
 public class HomeActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener{
@@ -64,12 +65,16 @@ public class HomeActivity extends BaseActivity implements
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sub1:
+                IntentUtils.startSetting(this);
                 break;
             case R.id.sub2:
                 break;
             case R.id.send:
                 break;
             case R.id.share:
+                break;
+            case R.id.user_info:
+                IntentUtils.startUserInfo(this);
                 break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);

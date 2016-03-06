@@ -52,11 +52,6 @@ public class LoginInteractorImpl extends AbstractInteractor implements LoginInte
 
     @Override
     public void run() {
-        String msg = (String)mRepository.getData();
-        if (msg == null || msg.length() == 0) {
-           notifyError();
-        } else {
-           postMessage(msg);
-        }
+        postMessage("success");
     }
 }

@@ -11,4 +11,6 @@ public interface LoginPresenter extends BasePresenter {
         void loginSuccess(String msg);
         void loginError();
     }
+
+    void login();
 }
