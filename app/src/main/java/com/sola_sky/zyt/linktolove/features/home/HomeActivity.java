@@ -1,5 +1,7 @@
 package com.sola_sky.zyt.linktolove.features.home;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,11 +11,14 @@ import android.view.MenuItem;
 
 import com.sola_sky.zyt.linktolove.R;
 import com.sola_sky.zyt.linktolove.app.BaseActivity;
+import com.sola_sky.zyt.linktolove.features.PermissionCallback;
 import com.sola_sky.zyt.linktolove.utils.IntentUtils;
+import com.sola_sky.zyt.linktolove.utils.PermissionUtils;
 
 public class HomeActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener{
+        NavigationView.OnNavigationItemSelectedListener, PermissionCallback {
 
+    private static final int READ_SD = 100;
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavView;
@@ -48,7 +53,9 @@ public class HomeActivity extends BaseActivity implements
 
     @Override
     public void initOther() {
-
+        PermissionUtils.needPermission(this, READ_SD,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}
+        ,this);
     }
 
 
@@ -59,6 +66,21 @@ public class HomeActivity extends BaseActivity implements
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == READ_SD) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onSuccessPermission();
+                } else {
+                    onFailedPermission();
+                }
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -79,5 +101,15 @@ public class HomeActivity extends BaseActivity implements
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+    @Override
+    public void onSuccessPermission() {
+
+    }
+
+    @Override
+    public void onFailedPermission() {
+
     }
 }
