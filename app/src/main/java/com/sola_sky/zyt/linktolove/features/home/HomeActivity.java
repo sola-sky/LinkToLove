@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import com.sola_sky.zyt.linktolove.R;
 import com.sola_sky.zyt.linktolove.app.BaseActivity;
@@ -22,6 +23,7 @@ public class HomeActivity extends BaseActivity implements
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavView;
+
 
     @Override
     public int getLayoutId() {
