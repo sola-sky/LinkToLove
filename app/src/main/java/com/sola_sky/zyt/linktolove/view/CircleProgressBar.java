@@ -32,6 +32,8 @@ public class CircleProgressBar extends View {
     private static final String DEFAULT_START_COLOR = "#00ff00";
     private static final String DEFAULT_END_COLOR = "#f76d09";
 
+    private static final int REFRESH_DRAWER = 3;
+
     private Paint mPaint;
 
 
@@ -127,7 +129,7 @@ public class CircleProgressBar extends View {
                     mDegree = 0;
                 }
                 mDegree -= Math.PI / 4;
-                mHandler.sendEmptyMessageDelayed(1, 150);
+                mHandler.sendEmptyMessageDelayed(REFRESH_DRAWER, 150);
             }
         };
 
@@ -165,6 +167,7 @@ public class CircleProgressBar extends View {
             }
         });
         mColorAnimator.start();
+
     }
 
     @Override
@@ -203,7 +206,7 @@ public class CircleProgressBar extends View {
         if (isFirstDraw) {
             isFirstDraw = false;
             startColorAnimation();
-            mHandler.sendEmptyMessageDelayed(1, 150);
+            mHandler.sendEmptyMessageDelayed(REFRESH_DRAWER, 150);
         }
     }
 
@@ -219,6 +222,18 @@ public class CircleProgressBar extends View {
             drawCircle(canvas, mDistance, mDegree, mMaxRadius - mInterval * i);
         }
         mDegree = temp;
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (visibility == View.GONE) {
+            mHandler.removeMessages(REFRESH_DRAWER);
+            mColorAnimator.cancel();
+        } else if (visibility == View.VISIBLE) {
+            mHandler.sendEmptyMessage(REFRESH_DRAWER);
+            mColorAnimator.start();
+        }
     }
 
     enum Type {
