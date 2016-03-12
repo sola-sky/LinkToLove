@@ -2,22 +2,15 @@ package com.sola_sky.zyt.linktolove.view;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Looper;
-import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
-
-import android.os.Handler;
-import android.widget.ProgressBar;
 
 import com.sola_sky.zyt.linktolove.R;
 import com.sola_sky.zyt.linktolove.utils.DimensionUtils;
@@ -57,6 +50,9 @@ public class CircleProgressBar extends View {
     private int mType;
 
     private boolean mAttached;
+    private boolean mRefreshIsPosted;
+
+    private RefreshProgressRunnable mRefreshDegreeRunner;
 
 
 
@@ -123,20 +119,16 @@ public class CircleProgressBar extends View {
         mPaint.setColor(Color.GREEN);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setColor(0xff00ff00);
-        mHandler = new Handler(Looper.getMainLooper());
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (mDegree <= -2 * Math.PI) {
-                    mDegree = 0;
-                }
-                mDegree -= Math.PI / 4;
-                mHandler.sendEmptyMessageDelayed(REFRESH_DRAWER, 150);
-            }
-        };
 
 
+
+    }
+
+    private void refreshDegree() {
+        if (mDegree <= -2 * Math.PI) {
+            mDegree = 0;
+        }
+        mDegree -= Math.PI / 4;
     }
 
 
@@ -189,7 +181,6 @@ public class CircleProgressBar extends View {
         postInvalidate();
     }
 
-    setVisibility
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -223,7 +214,7 @@ public class CircleProgressBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(0xFFF29B76);
-        moveByRotate(canvas);
+        rotate(canvas);
     }
 
     private void drawCircle(Canvas canvas, float distance, double degree, float radius) {
@@ -232,7 +223,7 @@ public class CircleProgressBar extends View {
         mDegree += Math.PI / 4;
     }
 
-    private void moveByRotate(Canvas canvas) {
+    private void rotate(Canvas canvas) {
         double temp = mDegree;
         for (int i = 7; i >= 0; i--) {
             drawCircle(canvas, mDistance, mDegree, mMaxRadius - mInterval * i);
@@ -240,13 +231,32 @@ public class CircleProgressBar extends View {
         mDegree = temp;
     }
 
+    private void postRunnable() {
+        if (mRefreshDegreeRunner == null) {
+            mRefreshDegreeRunner = new RefreshProgressRunnable();
+        }
+        if (!mRefreshIsPosted && mAttached) {
+            postDelayed(mRefreshDegreeRunner, 200);
+            mRefreshIsPosted = true;
+        }
+    }
+
+    private void removeRunnable() {
+        if (mRefreshDegreeRunner != null) {
+            removeCallbacks(mRefreshDegreeRunner);
+            mRefreshIsPosted = false;
+        }
+    }
+
     @Override
     public void setVisibility(int visibility) {
         if (visibility != getVisibility()) {
             if (visibility == GONE || visibility == INVISIBLE) {
                 stopColorAnimation();
+                removeRunnable();
             } else {
                 startColorAnimation();
+                postRunnable();
             }
         }
     }
@@ -256,19 +266,25 @@ public class CircleProgressBar extends View {
         super.onVisibilityChanged(changedView, visibility);
         if (visibility == GONE || visibility == INVISIBLE) {
             stopColorAnimation();
+            removeRunnable();
         } else {
             startColorAnimation();
+            postRunnable();
         }
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        startColorAnimation();
         mAttached = true;
+        postRunnable();
     }
 
     @Override
     protected void onDetachedFromWindow() {
+        removeRunnable();
+        stopColorAnimation();
         super.onDetachedFromWindow();
         mAttached = false;
     }
@@ -277,7 +293,9 @@ public class CircleProgressBar extends View {
 
         @Override
         public void run() {
-
+            refreshDegree();
+            mRefreshIsPosted = false;
+            postRunnable();
         }
     }
 
