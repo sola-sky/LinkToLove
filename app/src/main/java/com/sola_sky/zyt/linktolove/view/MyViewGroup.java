@@ -2,12 +2,17 @@ package com.sola_sky.zyt.linktolove.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
+
+import com.sola_sky.zyt.linktolove.features.Login.LoginPresenter;
 
 /**
  * Created by Li on 2016/3/14.
  */
 public class MyViewGroup extends ViewGroup {
+
+
 
     public MyViewGroup(Context context) {
         super(context);
@@ -23,12 +28,38 @@ public class MyViewGroup extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int parentDesireWidth = 0;
+        int parentDesireHeight = 0;
+
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = getChildAt(i);
+            MyMarginLayoutParams lp = (MyMarginLayoutParams) child.getLayoutParams();
+            measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
+
+            parentDesireWidth += child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+            parentDesireHeight += child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
+
+            parentDesireWidth = Math.max(parentDesireWidth, getSuggestedMinimumWidth());
+            parentDesireHeight = Math.max(parentDesireHeight, getSuggestedMinimumHeight());
+        }
+
+        setMeasuredDimension(resolveSizeAndState(parentDesireWidth, widthMeasureSpec, 0),
+                resolveSizeAndState(parentDesireHeight, heightMeasureSpec, 0));
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int parentPaddingLeft = getPaddingLeft();
+        int parentPaddingTop = getPaddingTop();
 
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = getChildAt(i);
+            MyMarginLayoutParams lp = (MyMarginLayoutParams) child.getLayoutParams();
+
+            child.layout(parentPaddingLeft + lp.leftMargin, );
+        }
     }
 
     @Override
