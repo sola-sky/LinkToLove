@@ -54,11 +54,15 @@ public class MyViewGroup extends ViewGroup {
         int parentPaddingTop = getPaddingTop();
 
         int childCount = getChildCount();
+        int offsetHeight = 0;
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
             MyMarginLayoutParams lp = (MyMarginLayoutParams) child.getLayoutParams();
-
-            child.layout(parentPaddingLeft + lp.leftMargin, );
+            child.layout(parentPaddingLeft + lp.leftMargin, offsetHeight + parentPaddingTop
+                            + lp.topMargin, parentPaddingLeft + lp.leftMargin
+                            + child.getMeasuredWidth(), child.getMeasuredHeight() + parentPaddingTop
+                    + lp.topMargin + offsetHeight );
+            offsetHeight += lp.topMargin + lp.bottomMargin + child.getMeasuredHeight();
         }
     }
 
