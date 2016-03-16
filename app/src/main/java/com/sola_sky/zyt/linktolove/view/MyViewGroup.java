@@ -1,9 +1,13 @@
 package com.sola_sky.zyt.linktolove.view;
 
 import android.content.Context;
+import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.Scroller;
 
 import com.sola_sky.zyt.linktolove.features.Login.LoginPresenter;
 
@@ -12,6 +16,14 @@ import com.sola_sky.zyt.linktolove.features.Login.LoginPresenter;
  */
 public class MyViewGroup extends ViewGroup {
 
+
+    private Scroller mScroller;
+
+    private int mTouchSlop;
+
+    private float mYDown;
+
+    private float mYLastMove;
 
 
     public MyViewGroup(Context context) {
@@ -24,6 +36,12 @@ public class MyViewGroup extends ViewGroup {
 
     public MyViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    private void init() {
+        mScroller = new Scroller(getContext());
+        ViewConfiguration configuration = ViewConfiguration.get(getContext());
+        mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
     }
 
     @Override
@@ -97,6 +115,24 @@ public class MyViewGroup extends ViewGroup {
 
         public MyMarginLayoutParams(LayoutParams source) {
             super(source);
+        }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+               break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+        }
+    }
+
+    @Override
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()) {
+            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            invalidate();
         }
     }
 }
