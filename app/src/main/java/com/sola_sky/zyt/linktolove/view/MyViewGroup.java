@@ -25,6 +25,12 @@ public class MyViewGroup extends ViewGroup {
 
     private float mYLastMove;
 
+    private float mYMove;
+
+    private int topBorder;
+
+    private int bottomBorder;
+
 
     public MyViewGroup(Context context) {
         super(context);
@@ -82,6 +88,8 @@ public class MyViewGroup extends ViewGroup {
                     + lp.topMargin + offsetHeight );
             offsetHeight += lp.topMargin + lp.bottomMargin + child.getMeasuredHeight();
         }
+        topBorder = getChildAt(0).getTop();
+        bottomBorder = getChildAt(childCount - 1).getBottom();
     }
 
     @Override
@@ -122,10 +130,39 @@ public class MyViewGroup extends ViewGroup {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mYDown = ev.getRawY();
+                mYLastMove = mYDown;
                break;
             case MotionEvent.ACTION_MOVE:
+                mYMove = ev.getRawY();
+                float diff = Math.abs(mYMove - mYDown);
+                mYLastMove = mYMove;
+                if (diff > mTouchSlop) {
+                    return true;
+                }
                 break;
         }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                mYMove = event.getRawY();
+                int scrolledY = (int) (mYLastMove - mYLastMove);
+                if (getScrollY() + scrolledY < topBorder) {
+                    scrollTo(0, topBorder);
+                    return true;
+                } else if (getScrollY() + scrolledY + getHeight() > bottomBorder) {
+                    scrollTo(0, bottomBorder - getHeight());
+                    return true;
+                }
+                scrollBy(0, scrolledY);
+                invalidate();
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
