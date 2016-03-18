@@ -46,6 +46,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".features.userinfo.UserInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".features.test.MyViewGroupActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
