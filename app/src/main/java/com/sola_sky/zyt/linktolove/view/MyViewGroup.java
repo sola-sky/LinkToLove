@@ -34,14 +34,17 @@ public class MyViewGroup extends ViewGroup {
 
     public MyViewGroup(Context context) {
         super(context);
+        init();
     }
 
     public MyViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public MyViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     private void init() {
@@ -148,6 +151,8 @@ public class MyViewGroup extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                return true;
             case MotionEvent.ACTION_MOVE:
                 mYMove = event.getRawY();
                 int scrolledY = (int) (mYLastMove - mYLastMove);
@@ -159,6 +164,12 @@ public class MyViewGroup extends ViewGroup {
                     return true;
                 }
                 scrollBy(0, scrolledY);
+                mYLastMove = mYMove;
+                return true;
+            case MotionEvent.ACTION_UP:
+                int targetIndex = (getScrollY() + getHeight() / 2) / getHeight();
+                int dy = targetIndex * getHeight() - getScrollY();
+                mScroller.startScroll(0, getScrollY(), 0, dy);
                 invalidate();
                 break;
         }
