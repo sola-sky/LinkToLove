@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Scroller;
 
 import com.sola_sky.zyt.linktolove.features.Login.LoginPresenter;
+import com.sola_sky.zyt.linktolove.utils.LogUtils;
 
 /**
  * Created by Li on 2016/3/14.
@@ -152,10 +153,11 @@ public class MyViewGroup extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                LogUtils.logd("onTouch", "down");
                 return true;
             case MotionEvent.ACTION_MOVE:
                 mYMove = event.getRawY();
-                int scrolledY = (int) (mYLastMove - mYLastMove);
+                int scrolledY = (int) (mYLastMove - mYMove);
                 if (getScrollY() + scrolledY < topBorder) {
                     scrollTo(0, topBorder);
                     return true;
@@ -163,15 +165,20 @@ public class MyViewGroup extends ViewGroup {
                     scrollTo(0, bottomBorder - getHeight());
                     return true;
                 }
+                LogUtils.logd("ScrollY", scrolledY+"");
                 scrollBy(0, scrolledY);
                 mYLastMove = mYMove;
+                LogUtils.logd("onTouch", "move");
                 return true;
             case MotionEvent.ACTION_UP:
                 int targetIndex = (getScrollY() + getHeight() / 2) / getHeight();
                 int dy = targetIndex * getHeight() - getScrollY();
                 mScroller.startScroll(0, getScrollY(), 0, dy);
+                LogUtils.logd("getScrollY", getScrollY() + "");
+                LogUtils.logd("dy", dy+"");
                 invalidate();
-                break;
+                LogUtils.logd("onTouch", "up");
+                return true;
         }
         return super.onTouchEvent(event);
     }
