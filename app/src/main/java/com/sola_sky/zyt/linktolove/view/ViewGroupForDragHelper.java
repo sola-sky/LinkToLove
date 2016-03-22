@@ -1,6 +1,7 @@
 package com.sola_sky.zyt.linktolove.view;
 
 import android.content.Context;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
  * Created by Li on 2016/3/20.
  */
 public class ViewGroupForDragHelper extends ViewGroup{
+
+    private ViewDragHelper mViewDragHelper;
 
     public ViewGroupForDragHelper(Context context) {
         super(context);
@@ -20,6 +23,16 @@ public class ViewGroupForDragHelper extends ViewGroup{
 
     public ViewGroupForDragHelper(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    private void init() {
+        mViewDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelper.Callback() {
+            @Override
+            public boolean tryCaptureView(View child, int pointerId) {
+                return false;
+            }
+        });
+        mViewDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_TOP);
     }
 
     @Override
