@@ -3,6 +3,7 @@ package com.sola_sky.zyt.linktolove.view;
 import android.content.Context;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -69,6 +70,17 @@ public class ViewGroupForDragHelper extends ViewGroup{
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return mViewDragHelper.shouldInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mViewDragHelper.processTouchEvent(event);
+        return true;
+    }
+
+    @Override
     protected LayoutParams generateDefaultLayoutParams() {
         return new MyMarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
@@ -99,6 +111,24 @@ public class ViewGroupForDragHelper extends ViewGroup{
 
         public MyMarginLayoutParams(LayoutParams source) {
             super(source);
+        }
+    }
+
+    private class ViewDragHelperCallback extends ViewDragHelper.Callback {
+
+        @Override
+        public boolean tryCaptureView(View child, int pointerId) {
+            return true;
+        }
+
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
+            return left;
+        }
+
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+            return top;
         }
     }
 }
