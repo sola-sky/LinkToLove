@@ -123,7 +123,9 @@ public class ViewGroupForDragHelper extends ViewGroup{
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            return left;
+            int leftBound = getLeft() + getPaddingLeft();
+            int rightBound = getWidth() - getPaddingRight() - child.getWidth() + getLeft();
+            return Math.min(Math.max(leftBound, left), rightBound);
         }
 
         @Override
