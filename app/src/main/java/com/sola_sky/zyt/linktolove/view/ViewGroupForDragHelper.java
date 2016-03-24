@@ -1,6 +1,7 @@
 package com.sola_sky.zyt.linktolove.view;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -14,25 +15,29 @@ public class ViewGroupForDragHelper extends ViewGroup{
 
     private ViewDragHelper mViewDragHelper;
 
+    private View mDragView;
+    private View mAutoBackView;
+    private View mEdgeTrackerView;
+
+    private Point mAutoBackOriginPos = new Point();
+
     public ViewGroupForDragHelper(Context context) {
         super(context);
+        init();
     }
 
     public ViewGroupForDragHelper(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public ViewGroupForDragHelper(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     private void init() {
-        mViewDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelper.Callback() {
-            @Override
-            public boolean tryCaptureView(View child, int pointerId) {
-                return false;
-            }
-        });
+        mViewDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelperCallback());
         mViewDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_TOP);
     }
 
@@ -67,6 +72,10 @@ public class ViewGroupForDragHelper extends ViewGroup{
             + lp.topMargin + childView.getMeasuredHeight());
             offsetWidth += lp.leftMargin + childView.getMeasuredWidth() + lp.rightMargin;
         }
+
+        mAutoBackOriginPos.x = mAutoBackView.getLeft();
+        mAutoBackOriginPos.y = mAutoBackView.getTop();
+
     }
 
     @Override
@@ -78,6 +87,21 @@ public class ViewGroupForDragHelper extends ViewGroup{
     public boolean onTouchEvent(MotionEvent event) {
         mViewDragHelper.processTouchEvent(event);
         return true;
+    }
+
+    @Override
+    public void computeScroll() {
+        if (mViewDragHelper.continueSettling(true)) {
+            invalidate();
+        }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mDragView = getChildAt(0);
+        mAutoBackView = getChildAt(1);
+        mEdgeTrackerView = getChildAt(2);
     }
 
     @Override
@@ -118,7 +142,7 @@ public class ViewGroupForDragHelper extends ViewGroup{
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            return true;
+            return child == mDragView || child == mAutoBackView;
         }
 
         @Override
@@ -126,11 +150,25 @@ public class ViewGroupForDragHelper extends ViewGroup{
             int leftBound = getLeft() + getPaddingLeft();
             int rightBound = getWidth() - getPaddingRight() - child.getWidth() + getLeft();
             return Math.min(Math.max(leftBound, left), rightBound);
+      //      return left;
         }
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             return top;
+        }
+
+        @Override
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            if (releasedChild == mAutoBackView) {
+                mViewDragHelper.settleCapturedViewAt(mAutoBackOriginPos.x, mAutoBackOriginPos.y);
+                invalidate();
+            }
+        }
+
+        @Override
+        public void onEdgeDragStarted(int edgeFlags, int pointerId) {
+            mViewDragHelper.captureChildView(mEdgeTrackerView, pointerId);
         }
     }
 }
