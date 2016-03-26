@@ -150,7 +150,7 @@ public class ViewGroupForDragHelper extends ViewGroup{
             int leftBound = getLeft() + getPaddingLeft();
             int rightBound = getWidth() - getPaddingRight() - child.getWidth() + getLeft();
             return Math.min(Math.max(leftBound, left), rightBound);
-      //      return left;
+            //      return left;
         }
 
         @Override
@@ -169,6 +169,46 @@ public class ViewGroupForDragHelper extends ViewGroup{
         @Override
         public void onEdgeDragStarted(int edgeFlags, int pointerId) {
             mViewDragHelper.captureChildView(mEdgeTrackerView, pointerId);
+        }
+
+        @Override
+        public void onViewDragStateChanged(int state) {
+            super.onViewDragStateChanged(state);
+        }
+
+        @Override
+        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            super.onViewPositionChanged(changedView, left, top, dx, dy);
+        }
+
+        @Override
+        public void onViewCaptured(View capturedChild, int activePointerId) {
+            super.onViewCaptured(capturedChild, activePointerId);
+        }
+
+        @Override
+        public void onEdgeTouched(int edgeFlags, int pointerId) {
+            super.onEdgeTouched(edgeFlags, pointerId);
+        }
+
+        @Override
+        public boolean onEdgeLock(int edgeFlags) {
+            return super.onEdgeLock(edgeFlags);
+        }
+
+        @Override
+        public int getOrderedChildIndex(int index) {
+            return super.getOrderedChildIndex(index);
+        }
+
+        @Override
+        public int getViewHorizontalDragRange(View child) {
+            return super.getViewHorizontalDragRange(child);
+        }
+
+        @Override
+        public int getViewVerticalDragRange(View child) {
+            return super.getViewVerticalDragRange(child);
         }
     }
 }
