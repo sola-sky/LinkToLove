@@ -3,8 +3,11 @@ package com.sola_sky.zyt.linktolove.view;
 import android.content.Context;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.sola_sky.zyt.linktolove.utils.LogUtils;
 
 /**
  * Created by Li on 2016/3/27.
@@ -15,6 +18,8 @@ public class ViewGroupDrag extends ViewGroup {
 
     private View mContentView;
     private View mMenuView;
+
+    private int mOffset;
 
 
     public ViewGroupDrag(Context context) {
@@ -34,7 +39,22 @@ public class ViewGroupDrag extends ViewGroup {
 
     private void init() {
         mDragHelper = ViewDragHelper.create(this, 1.0f, new MyDragHelperCallback());
-        mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL);
+        mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    protected LayoutParams generateLayoutParams(LayoutParams p) {
+        return new MarginLayoutParams(p);
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new MarginLayoutParams(getContext(), attrs);
     }
 
     @Override
@@ -74,14 +94,32 @@ public class ViewGroupDrag extends ViewGroup {
                     getPaddingLeft() + lp.leftMargin + childView.getMeasuredWidth(),
                     getPaddingTop() + lp.topMargin + childView.getMeasuredHeight());
         }
-        int offset = 0;
-        for (int i = 1; i < childCount; i++) {
-            View childView = getChildAt(i);
+
+            View childView = getChildAt(1);
             MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();
-            childView.layout(offset - childView.getMeasuredWidth() - lp.rightMargin, getPaddingTop()
-            + lp.topMargin, offset - lp.rightMargin, getPaddingTop() + lp.topMargin
+            LogUtils.logd("ViewGroupDrag", mOffset - childView.getMeasuredWidth() - lp.rightMargin + "");
+            childView.layout(mOffset - childView.getMeasuredWidth() - lp.rightMargin, getPaddingTop()
+            + lp.topMargin, mOffset - lp.rightMargin, getPaddingTop() + lp.topMargin
                     + childView.getMeasuredHeight());
-            offset -= childView.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+
+
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return mDragHelper.shouldInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+         mDragHelper.processTouchEvent(event);
+        return true;
+    }
+
+    @Override
+    public void computeScroll() {
+        if (mDragHelper.continueSettling(true)) {
+            invalidate();
         }
     }
 
@@ -107,7 +145,35 @@ public class ViewGroupDrag extends ViewGroup {
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            return false;
+            LogUtils.logd("ViewGroupDrag", "tryCaptureView");
+            return child == mMenuView;
+        }
+
+        @Override
+        public void onEdgeDragStarted(int edgeFlags, int pointerId) {
+            mDragHelper.captureChildView(mMenuView, pointerId);
+            LogUtils.logd("ViewGroupDrag", "onEdgeDragStarted");
+        }
+
+        @Override
+        public void onEdgeTouched(int edgeFlags, int pointerId) {
+            super.onEdgeTouched(edgeFlags, pointerId);
+            LogUtils.logd("ViewGroupDrag", "onEdgeTouched");
+            mOffset = 10;
+            invalidate();
+
+        }
+
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
+            LogUtils.logd("ViewGroupDrag", "clampViewPositionHorizontal");
+            return Math.max(-child.getWidth(), Math.min(0, left));
+        }
+
+        @Override
+        public int getViewHorizontalDragRange(View child) {
+            LogUtils.logd("ViewGroupDrag", "getViewHorizontalDragRange");
+            return mMenuView == child ? child.getWidth() : 0;
         }
     }
 }
