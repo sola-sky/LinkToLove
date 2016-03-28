@@ -39,7 +39,7 @@ public class ViewGroupDrag extends ViewGroup {
 
     private void init() {
         mDragHelper = ViewDragHelper.create(this, 1.0f, new MyDragHelperCallback());
-        mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
+        mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL);
     }
 
     @Override
@@ -151,17 +151,16 @@ public class ViewGroupDrag extends ViewGroup {
 
         @Override
         public void onEdgeDragStarted(int edgeFlags, int pointerId) {
-            mDragHelper.captureChildView(mMenuView, pointerId);
             LogUtils.logd("ViewGroupDrag", "onEdgeDragStarted");
+            mDragHelper.captureChildView(mMenuView, pointerId);
         }
 
         @Override
         public void onEdgeTouched(int edgeFlags, int pointerId) {
             super.onEdgeTouched(edgeFlags, pointerId);
             LogUtils.logd("ViewGroupDrag", "onEdgeTouched");
-            mOffset = 10;
-            invalidate();
-
+            mOffset = 30;
+            requestLayout();
         }
 
         @Override
