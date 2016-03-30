@@ -174,5 +174,18 @@ public class ViewGroupDrag extends ViewGroup {
             LogUtils.logd("ViewGroupDrag", "getViewHorizontalDragRange");
             return mMenuView == child ? child.getWidth() : 0;
         }
+
+        @Override
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            LogUtils.logd("ViewGroup", "onViewReleased");
+            MarginLayoutParams lp = (MarginLayoutParams) releasedChild.getLayoutParams();
+            int x = -releasedChild.getMeasuredWidth() - lp.rightMargin;
+            if (releasedChild.getLeft() > x / 2) {
+                mDragHelper.settleCapturedViewAt(0, lp.topMargin + getPaddingTop());
+            } else {
+                mDragHelper.settleCapturedViewAt(x, lp.topMargin + getPaddingTop());
+            }
+            invalidate();
+        }
     }
 }
