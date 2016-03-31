@@ -113,6 +113,27 @@ public class ViewGroupDrag extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
          mDragHelper.processTouchEvent(event);
+//        switch(event.getAction()) {
+//            case MotionEvent.ACTION_UP:
+//                LogUtils.logd("ViewGroup", "onViewReleased");
+//                MarginLayoutParams lp = (MarginLayoutParams) getChildAt(1).getLayoutParams();
+//                int x = -getChildAt(1).getMeasuredWidth() - lp.rightMargin;
+//                if (getChildAt(1).getLeft() > x / 2) {
+//                    mDragHelper.settleCapturedViewAt(0, lp.topMargin + getPaddingTop());
+//                } else {
+//                    mDragHelper.settleCapturedViewAt(x, lp.topMargin + getPaddingTop());
+//                }
+//                invalidate();
+//            break;
+//        }
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if (mOffset == 30) {
+                    mOffset = 0;
+                    requestLayout();
+                }
+                break;
+        }
         return true;
     }
 
@@ -186,6 +207,18 @@ public class ViewGroupDrag extends ViewGroup {
                 mDragHelper.settleCapturedViewAt(x, lp.topMargin + getPaddingTop());
             }
             invalidate();
+        }
+
+        @Override
+        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            LogUtils.logd("ViewGroupDrag", "onViewPositionChanged");
+            mOffset = 0;
+            super.onViewPositionChanged(changedView, left, top, dx, dy);
+        }
+
+        @Override
+        public int getViewVerticalDragRange(View child) {
+            return super.getViewVerticalDragRange(child);
         }
     }
 }
