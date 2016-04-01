@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sola_sky.zyt.linktolove.utils.LogUtils;
+
 /**
  * Created by Li on 2016/3/20.
  */
@@ -65,6 +67,9 @@ public class ViewGroupForDragHelper extends ViewGroup{
         int childCount = getChildCount();
         int offsetWidth = getPaddingLeft();
         for (int i = 0; i < childCount; i++) {
+            if (i == 2) {
+                LogUtils.logd("ViewGroupForDragHelper on Layout", offsetWidth + "");
+            }
             View childView = getChildAt(i);
             MyMarginLayoutParams lp = (MyMarginLayoutParams) childView.getLayoutParams();
             childView.layout(offsetWidth + lp.leftMargin, getPaddingTop() + lp.topMargin,
