@@ -4,7 +4,9 @@ import android.content.Context;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import com.sola_sky.zyt.linktolove.utils.LogUtils;
@@ -16,10 +18,15 @@ public class ViewGroupDrag extends ViewGroup {
 
     private ViewDragHelper mDragHelper;
 
+    private ViewConfiguration mViewConfiguration;
+
     private View mContentView;
     private View mMenuView;
 
-    private int mOffset;
+    private boolean mDragged = false;
+    private boolean mEdgeTouched = false;
+
+
 
 
     public ViewGroupDrag(Context context) {
@@ -40,6 +47,7 @@ public class ViewGroupDrag extends ViewGroup {
     private void init() {
         mDragHelper = ViewDragHelper.create(this, 1.0f, new MyDragHelperCallback());
         mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL);
+        mViewConfiguration = ViewConfiguration.get(getContext());
     }
 
     @Override
@@ -97,9 +105,9 @@ public class ViewGroupDrag extends ViewGroup {
 
             View childView = getChildAt(1);
             MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();
-            LogUtils.logd("ViewGroupDrag", mOffset - childView.getMeasuredWidth() - lp.rightMargin + "");
-            childView.layout(mOffset - childView.getMeasuredWidth() - lp.rightMargin, getPaddingTop()
-            + lp.topMargin, mOffset - lp.rightMargin, getPaddingTop() + lp.topMargin
+            LogUtils.logd("ViewGroupDrag", - childView.getMeasuredWidth() - lp.rightMargin + "");
+            childView.layout(-childView.getMeasuredWidth() - lp.rightMargin, getPaddingTop()
+            + lp.topMargin, -lp.rightMargin, getPaddingTop() + lp.topMargin
                     + childView.getMeasuredHeight());
 
 
@@ -128,10 +136,17 @@ public class ViewGroupDrag extends ViewGroup {
 //        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (mOffset == 30) {
-                    mOffset = 0;
-                    requestLayout();
+            case MotionEvent.ACTION_CANCEL:
+                if (mEdgeTouched && !mDragged) {
+                    MarginLayoutParams lp = (MarginLayoutParams) getChildAt(1).getLayoutParams();
+                    int x = -getChildAt(1).getMeasuredWidth() - lp.rightMargin;
+                    mDragHelper.smoothSlideViewTo(getChildAt(1), x, lp.topMargin
+                            + getPaddingTop());
+                    invalidate();
+//                    requestLayout();
                 }
+                mDragged = false;
+                mEdgeTouched = false;
                 break;
         }
         return true;
@@ -172,16 +187,25 @@ public class ViewGroupDrag extends ViewGroup {
 
         @Override
         public void onEdgeDragStarted(int edgeFlags, int pointerId) {
-            LogUtils.logd("ViewGroupDrag", "onEdgeDragStarted");
-            mDragHelper.captureChildView(mMenuView, pointerId);
+            if (edgeFlags == ViewDragHelper.EDGE_LEFT) {
+                mDragged = true;
+                LogUtils.logd("ViewGroupDrag", "onEdgeDragStarted");
+                mDragHelper.captureChildView(mMenuView, pointerId);
+            }
         }
 
         @Override
         public void onEdgeTouched(int edgeFlags, int pointerId) {
-            super.onEdgeTouched(edgeFlags, pointerId);
-            LogUtils.logd("ViewGroupDrag", "onEdgeTouched");
-            mOffset = 30;
-            requestLayout();
+            if (edgeFlags == ViewDragHelper.EDGE_LEFT) {
+                mEdgeTouched = true;
+                LogUtils.logd("ViewGroupDrag", "onEdgeTouched");
+                MarginLayoutParams lp = (MarginLayoutParams) getChildAt(1).getLayoutParams();
+                int x = -getChildAt(1).getMeasuredWidth() - lp.rightMargin + 60;
+                mDragHelper.smoothSlideViewTo(getChildAt(1), x, lp.topMargin
+                        + getPaddingTop());
+                invalidate();
+            }
+           // requestLayout();
         }
 
         @Override
@@ -212,7 +236,6 @@ public class ViewGroupDrag extends ViewGroup {
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             LogUtils.logd("ViewGroupDrag", "onViewPositionChanged");
-            mOffset = 0;
             super.onViewPositionChanged(changedView, left, top, dx, dy);
         }
 
