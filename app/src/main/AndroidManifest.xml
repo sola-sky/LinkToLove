@@ -44,10 +44,14 @@
         <activity
             android:name=".features.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".features.userinfo.UserInfoActivity"
+        <activity
+            android:name=".features.userinfo.UserInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".features.test.MyViewGroupActivity"
+        <activity
+            android:name=".features.test.MyViewGroupActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".features.test.DragActivity" />
+        <activity android:name=".features.test.MyDragActivity"></activity>
     </application>
 
 </manifest>
