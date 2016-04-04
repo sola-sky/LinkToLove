@@ -92,10 +92,13 @@ public class HomeActivity extends BaseActivity implements
                 IntentUtils.startSetting(this);
                 break;
             case R.id.sub2:
+                IntentUtils.startDragView(this);
                 break;
             case R.id.send:
+                IntentUtils.startMyDragView(this);
                 break;
             case R.id.share:
+                IntentUtils.startMyGroupView(this);
                 break;
             case R.id.user_info:
                 IntentUtils.startUserInfo(this);
