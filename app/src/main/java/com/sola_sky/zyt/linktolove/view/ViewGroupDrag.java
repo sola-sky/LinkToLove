@@ -243,5 +243,34 @@ public class ViewGroupDrag extends ViewGroup {
         public int getViewVerticalDragRange(View child) {
             return super.getViewVerticalDragRange(child);
         }
+
+        @Override
+        public boolean onEdgeLock(int edgeFlags) {
+            return super.onEdgeLock(edgeFlags);
+        }
+
+        public MyDragHelperCallback() {
+            super();
+        }
+
+        @Override
+        public void onViewDragStateChanged(int state) {
+            super.onViewDragStateChanged(state);
+        }
+
+        @Override
+        public void onViewCaptured(View capturedChild, int activePointerId) {
+            super.onViewCaptured(capturedChild, activePointerId);
+        }
+
+        @Override
+        public int getOrderedChildIndex(int index) {
+            return super.getOrderedChildIndex(index);
+        }
+
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+            return super.clampViewPositionVertical(child, top, dy);
+        }
     }
 }
