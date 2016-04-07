@@ -34,7 +34,7 @@ public class DragViewGroup extends ViewGroup {
         if (getChildCount() == 2) {
 
         } else {
-            throw new
+            throw new IllegalArgumentException("view count must be 2");
         }
     }
 }
