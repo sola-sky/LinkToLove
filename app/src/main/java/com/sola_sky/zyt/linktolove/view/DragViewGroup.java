@@ -6,22 +6,28 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sola_sky.zyt.linktolove.utils.LogUtils;
+
 /**
  * Created by Li on 2016/4/6.
  */
 public class DragViewGroup extends ViewGroup {
 
+    private static final String TAG = "DRAGVIEWGROUP";
     private ViewDragHelper mDragHelper;
     public DragViewGroup(Context context) {
         super(context);
+        init();
     }
 
     public DragViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public DragViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     public void init() {
@@ -31,6 +37,7 @@ public class DragViewGroup extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        LogUtils.logd(TAG, "onMeasure");
         int parentDesireWidth = 0;
         int parentDesireHeight = 0;
         int childCount = getChildCount();
@@ -50,8 +57,23 @@ public class DragViewGroup extends ViewGroup {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b){
+        LogUtils.logd(TAG, "onLayout");
+        View contentView = getChildAt(0);
+        MyMarginLayoutParams contentViewLp = (MyMarginLayoutParams) contentView.getLayoutParams();
+        int left0 = getPaddingLeft() + contentViewLp.leftMargin + contentView.getPaddingLeft();
+        int top0 = getPaddingTop() + contentViewLp.topMargin + contentView.getPaddingTop();
+        int right0 = left0 + contentView.getMeasuredWidth();
+        int bottom0 = top0 + contentView.getMeasuredHeight();
+        contentView.layout(left0, top0, right0, bottom0);
 
+        View dragView = getChildAt(1);
+        MyMarginLayoutParams dragViewLp = (MyMarginLayoutParams) dragView.getLayoutParams();
+        int right1 = -(dragView.getRight() + dragViewLp.rightMargin);
+        int left1 = right1 - dragView.getMeasuredWidth();
+        int top1 = dragViewLp.topMargin + dragView.getPaddingTop();
+        int bottom1 = top1 + dragView.getMeasuredHeight();
+        dragView.layout(left1, top1, right1, bottom1);
     }
 
     @Override
