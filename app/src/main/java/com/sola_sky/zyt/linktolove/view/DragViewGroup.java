@@ -13,7 +13,7 @@ import com.sola_sky.zyt.linktolove.utils.LogUtils;
  */
 public class DragViewGroup extends ViewGroup {
 
-    private static final String TAG = "DRAGVIEWGROUP";
+    private static final String TAG = "DragViewGroup";
     private ViewDragHelper mDragHelper;
     public DragViewGroup(Context context) {
         super(context);
@@ -41,6 +41,9 @@ public class DragViewGroup extends ViewGroup {
         int parentDesireWidth = 0;
         int parentDesireHeight = 0;
         int childCount = getChildCount();
+        if (childCount != 2) {
+            throw new IllegalStateException("view child count must be 2");
+        }
         for (int i = 0; i < childCount; i++) {
             View view = getChildAt(i);
             MyMarginLayoutParams lp = (MyMarginLayoutParams) view.getLayoutParams();
@@ -123,6 +126,66 @@ public class DragViewGroup extends ViewGroup {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             return false;
+        }
+
+        @Override
+        public void onViewDragStateChanged(int state) {
+            super.onViewDragStateChanged(state);
+        }
+
+        @Override
+        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            super.onViewPositionChanged(changedView, left, top, dx, dy);
+        }
+
+        @Override
+        public void onViewCaptured(View capturedChild, int activePointerId) {
+            super.onViewCaptured(capturedChild, activePointerId);
+        }
+
+        @Override
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            super.onViewReleased(releasedChild, xvel, yvel);
+        }
+
+        @Override
+        public void onEdgeTouched(int edgeFlags, int pointerId) {
+            super.onEdgeTouched(edgeFlags, pointerId);
+        }
+
+        @Override
+        public boolean onEdgeLock(int edgeFlags) {
+            return super.onEdgeLock(edgeFlags);
+        }
+
+        @Override
+        public void onEdgeDragStarted(int edgeFlags, int pointerId) {
+            super.onEdgeDragStarted(edgeFlags, pointerId);
+        }
+
+        @Override
+        public int getOrderedChildIndex(int index) {
+            return super.getOrderedChildIndex(index);
+        }
+
+        @Override
+        public int getViewHorizontalDragRange(View child) {
+            return super.getViewHorizontalDragRange(child);
+        }
+
+        @Override
+        public int getViewVerticalDragRange(View child) {
+            return super.getViewVerticalDragRange(child);
+        }
+
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
+            return super.clampViewPositionHorizontal(child, left, dx);
+        }
+
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+            return super.clampViewPositionVertical(child, top, dy);
         }
     }
 }
