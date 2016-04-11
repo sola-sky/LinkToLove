@@ -15,6 +15,11 @@ public class DragViewGroup extends ViewGroup {
 
     private static final String TAG = "DragViewGroup";
     private ViewDragHelper mDragHelper;
+
+    private View mLeftView;
+    private View mContentView;
+    private float mCurMovePercent = 0;
+
     public DragViewGroup(Context context) {
         super(context);
         init();
@@ -45,7 +50,12 @@ public class DragViewGroup extends ViewGroup {
             throw new IllegalStateException("view child count must be 2");
         }
         for (int i = 0; i < childCount; i++) {
-            View view = getChildAt(i);
+            View view = null;
+            if (i == 0) {
+                view = mContentView = getChildAt(i);
+            } else {
+                view = mLeftView = getChildAt(i);
+            }
             MyMarginLayoutParams lp = (MyMarginLayoutParams) view.getLayoutParams();
             measureChildWithMargins(view, widthMeasureSpec, 0, heightMeasureSpec, 0);
 
@@ -104,6 +114,13 @@ public class DragViewGroup extends ViewGroup {
         return new MyMarginLayoutParams(getContext(), attrs);
     }
 
+    @Override
+    public void computeScroll() {
+        if (mDragHelper.continueSettling(true)) {
+            invalidate();
+        }
+    }
+
     class MyMarginLayoutParams extends MarginLayoutParams {
         public MyMarginLayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
@@ -125,7 +142,7 @@ public class DragViewGroup extends ViewGroup {
     class MyDragCallback extends ViewDragHelper.Callback {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            return false;
+            return true;
         }
 
         @Override
@@ -135,7 +152,21 @@ public class DragViewGroup extends ViewGroup {
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-            super.onViewPositionChanged(changedView, left, top, dx, dy);
+            LogUtils.logd(TAG, "onViewPositionChanged");
+            if (changedView == mContentView) {
+                mCurMovePercent = (mLeftView.getMeasuredWidth() - left) / (float)mLeftView
+                        .getMeasuredWidth();
+            }
+
+            float contentViewScale = 0.2f * mCurMovePercent + 0.8f;
+            mContentView.setScaleX(contentViewScale);
+            mContentView.setScaleY(contentViewScale);
+
+            float leftViewScale = 1.8f - contentViewScale;
+            mLeftView.setScaleX(leftViewScale);
+            mLeftView.setScaleY(leftViewScale);
+            mLeftView.setAlpha(leftViewScale);
+
         }
 
         @Override
