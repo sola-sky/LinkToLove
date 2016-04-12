@@ -3,6 +3,8 @@ package com.sola_sky.zyt.linktolove.view;
 import android.content.Context;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -100,6 +102,17 @@ public class DragViewGroup extends ViewGroup {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return mDragHelper.shouldInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mDragHelper.processTouchEvent(event);
+        return true;
+    }
+
+    @Override
     protected LayoutParams generateDefaultLayoutParams() {
         return new MyMarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
@@ -153,20 +166,30 @@ public class DragViewGroup extends ViewGroup {
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             LogUtils.logd(TAG, "onViewPositionChanged");
+            LogUtils.logd(TAG, "left:" + left);
             if (changedView == mContentView) {
+                LogUtils.logd(TAG, "Yes mContentView");
                 mCurMovePercent = (mLeftView.getMeasuredWidth() - left) / (float)mLeftView
                         .getMeasuredWidth();
+            } else {
+                LogUtils.logd(TAG, "Not mContentView");
             }
+            LogUtils.logd(TAG, "mCurMovePercent:" + mCurMovePercent);
 
             float contentViewScale = 0.2f * mCurMovePercent + 0.8f;
             mContentView.setScaleX(contentViewScale);
             mContentView.setScaleY(contentViewScale);
+            LogUtils.logd(TAG, "contentViewScale:" + contentViewScale);
 
             float leftViewScale = 1.8f - contentViewScale;
+            LogUtils.logd(TAG, "leftViewScale:" + leftViewScale);
             mLeftView.setScaleX(leftViewScale);
             mLeftView.setScaleY(leftViewScale);
             mLeftView.setAlpha(leftViewScale);
 
+            float leftTranX = mLeftView.getMeasuredWidth() * mCurMovePercent;
+            LogUtils.logd(TAG, "leftTranX:" + leftTranX);
+            mLeftView.setTranslationX(leftTranX);
         }
 
         @Override
@@ -211,7 +234,7 @@ public class DragViewGroup extends ViewGroup {
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            return super.clampViewPositionHorizontal(child, left, dx);
+            return left;
         }
 
         @Override
