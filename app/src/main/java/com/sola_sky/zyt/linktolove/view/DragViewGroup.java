@@ -187,7 +187,7 @@ public class DragViewGroup extends ViewGroup {
             mLeftView.setScaleY(leftViewScale);
             mLeftView.setAlpha(leftViewScale);
 
-            float leftTranX = mLeftView.getMeasuredWidth() * mCurMovePercent;
+            float leftTranX = mLeftView.getMeasuredWidth() * (1 - mCurMovePercent);
             LogUtils.logd(TAG, "leftTranX:" + leftTranX);
             mLeftView.setTranslationX(leftTranX);
         }
@@ -224,7 +224,7 @@ public class DragViewGroup extends ViewGroup {
 
         @Override
         public int getViewHorizontalDragRange(View child) {
-            return super.getViewHorizontalDragRange(child);
+            return (child == mContentView ? mContentView.getMeasuredWidth() : 0);
         }
 
         @Override
@@ -234,7 +234,7 @@ public class DragViewGroup extends ViewGroup {
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            return left;
+            return Math.max(0, Math.min(left, mLeftView.getMeasuredWidth()));
         }
 
         @Override
