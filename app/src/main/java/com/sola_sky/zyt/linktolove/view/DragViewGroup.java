@@ -155,11 +155,13 @@ public class DragViewGroup extends ViewGroup {
     class MyDragCallback extends ViewDragHelper.Callback {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
+            LogUtils.logd(TAG, "child:" + (child == mLeftView));
             return true;
         }
 
         @Override
         public void onViewDragStateChanged(int state) {
+            LogUtils.logd(TAG, "onViewDragStateChanged");
             super.onViewDragStateChanged(state);
         }
 
@@ -190,55 +192,72 @@ public class DragViewGroup extends ViewGroup {
             float leftTranX = mLeftView.getMeasuredWidth() * (1 - mCurMovePercent);
             LogUtils.logd(TAG, "leftTranX:" + leftTranX);
             mLeftView.setTranslationX(leftTranX);
+        //    mDragHelper.smoothSlideViewTo(mLeftView, (int) leftTranX, 0);
+            invalidate();
         }
 
         @Override
         public void onViewCaptured(View capturedChild, int activePointerId) {
+            LogUtils.logd(TAG, "onViewCaptured");
             super.onViewCaptured(capturedChild, activePointerId);
         }
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            LogUtils.logd(TAG, "onViewReleased");
             super.onViewReleased(releasedChild, xvel, yvel);
         }
 
         @Override
         public void onEdgeTouched(int edgeFlags, int pointerId) {
+            LogUtils.logd(TAG, "onEdgeTouched");
             super.onEdgeTouched(edgeFlags, pointerId);
         }
 
         @Override
         public boolean onEdgeLock(int edgeFlags) {
+            LogUtils.logd(TAG, "onEdgeLock");
             return super.onEdgeLock(edgeFlags);
         }
 
         @Override
         public void onEdgeDragStarted(int edgeFlags, int pointerId) {
+            LogUtils.logd(TAG, "onEdgeDragStarted");
             super.onEdgeDragStarted(edgeFlags, pointerId);
         }
 
         @Override
         public int getOrderedChildIndex(int index) {
+            LogUtils.logd(TAG, "getOrderedChildIndex:" +index);
             return super.getOrderedChildIndex(index);
         }
 
         @Override
         public int getViewHorizontalDragRange(View child) {
+            LogUtils.logd(TAG, "getViewHorizontalDragRange");
             return (child == mContentView ? mContentView.getMeasuredWidth() : 0);
         }
 
         @Override
         public int getViewVerticalDragRange(View child) {
+            LogUtils.logd(TAG, "getViewVerticalDragRange");
             return super.getViewVerticalDragRange(child);
         }
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            return Math.max(0, Math.min(left, mLeftView.getMeasuredWidth()));
+            LogUtils.logd(TAG, "clampViewPositionHorizontal");
+            if (child == mContentView) {
+                return Math.max(0, Math.min(left, mLeftView.getMeasuredWidth()));
+            } else if (child == mLeftView){
+                return Math.max(-mLeftView.getMeasuredWidth(), Math.min(left, 0));
+            }
+            return 0;
         }
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
+            LogUtils.logd(TAG, "clamViewPositionVertical");
             return super.clampViewPositionVertical(child, top, dy);
         }
     }
