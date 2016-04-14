@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<com.sola_sky.zyt.linktolove.view.ViewGroupDrag xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sola_sky.zyt.linktolove.view.DragViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FF0000FF"
     tools:context="com.sola_sky.zyt.linktolove.features.test.MyDragActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#FF00FF00"
         android:text="Content" />
 
     <TextView
@@ -18,5 +20,5 @@
         android:background="#FFFF0000"
         android:text="Menu"
         android:gravity="center"/>
-</com.sola_sky.zyt.linktolove.view.ViewGroupDrag>
+</com.sola_sky.zyt.linktolove.view.DragViewGroup>
 
