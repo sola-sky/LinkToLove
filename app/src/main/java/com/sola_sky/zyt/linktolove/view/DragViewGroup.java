@@ -191,8 +191,9 @@ public class DragViewGroup extends ViewGroup {
 
             float leftTranX = mLeftView.getMeasuredWidth() * (1 - mCurMovePercent);
             LogUtils.logd(TAG, "leftTranX:" + leftTranX);
-            mLeftView.setTranslationX(leftTranX);
-        //    mDragHelper.smoothSlideViewTo(mLeftView, (int) leftTranX, 0);
+       //     mLeftView.setTranslationX(leftTranX);
+            mDragHelper.smoothSlideViewTo(mLeftView, left - mContentView.getMeasuredWidth(), 0);
+
             invalidate();
         }
 
