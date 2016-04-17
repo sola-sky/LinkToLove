@@ -22,6 +22,8 @@ public class DragViewGroup extends ViewGroup {
     private View mContentView;
     private float mCurMovePercent = 0;
 
+    private float mLeftInitialX;
+
     public DragViewGroup(Context context) {
         super(context);
         init();
@@ -89,6 +91,7 @@ public class DragViewGroup extends ViewGroup {
         int top1 = dragViewLp.topMargin + dragView.getPaddingTop();
         int bottom1 = top1 + dragView.getMeasuredHeight();
         dragView.layout(left1, top1, right1, bottom1);
+        mLeftInitialX = left1;
     }
 
     @Override
@@ -155,6 +158,7 @@ public class DragViewGroup extends ViewGroup {
     class MyDragCallback extends ViewDragHelper.Callback {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
+            mDragHelper.captureChildView(mContentView, pointerId);
             LogUtils.logd(TAG, "child:" + (child == mLeftView));
             return true;
         }
@@ -173,28 +177,29 @@ public class DragViewGroup extends ViewGroup {
                 LogUtils.logd(TAG, "Yes mContentView");
                 mCurMovePercent = (mLeftView.getMeasuredWidth() - left) / (float)mLeftView
                         .getMeasuredWidth();
+                LogUtils.logd(TAG, "mCurMovePercent:" + mCurMovePercent);
+
+                float contentViewScale = 0.2f * mCurMovePercent + 0.8f;
+                mContentView.setScaleX(contentViewScale);
+                mContentView.setScaleY(contentViewScale);
+                LogUtils.logd(TAG, "contentViewScale:" + contentViewScale);
+
+                float leftViewScale = 1.8f - contentViewScale;
+                LogUtils.logd(TAG, "leftViewScale:" + leftViewScale);
+                mLeftView.setScaleX(leftViewScale);
+                mLeftView.setScaleY(leftViewScale);
+                mLeftView.setAlpha(leftViewScale);
+
+                float leftTranX = mLeftView.getMeasuredWidth() * (1 - mCurMovePercent);
+                LogUtils.logd(TAG, "leftTranX:" + leftTranX);
+            //    mLeftView.setTranslationX(leftTranX);
+                mDragHelper.smoothSlideViewTo(mLeftView, (int) (mLeftInitialX + left), 0);
+
+                invalidate();
             } else {
                 LogUtils.logd(TAG, "Not mContentView");
             }
-            LogUtils.logd(TAG, "mCurMovePercent:" + mCurMovePercent);
 
-            float contentViewScale = 0.2f * mCurMovePercent + 0.8f;
-            mContentView.setScaleX(contentViewScale);
-            mContentView.setScaleY(contentViewScale);
-            LogUtils.logd(TAG, "contentViewScale:" + contentViewScale);
-
-            float leftViewScale = 1.8f - contentViewScale;
-            LogUtils.logd(TAG, "leftViewScale:" + leftViewScale);
-            mLeftView.setScaleX(leftViewScale);
-            mLeftView.setScaleY(leftViewScale);
-            mLeftView.setAlpha(leftViewScale);
-
-            float leftTranX = mLeftView.getMeasuredWidth() * (1 - mCurMovePercent);
-            LogUtils.logd(TAG, "leftTranX:" + leftTranX);
-       //     mLeftView.setTranslationX(leftTranX);
-            mDragHelper.smoothSlideViewTo(mLeftView, left - mContentView.getMeasuredWidth(), 0);
-
-            invalidate();
         }
 
         @Override
