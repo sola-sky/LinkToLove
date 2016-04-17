@@ -206,6 +206,10 @@ public class DragViewGroup extends ViewGroup {
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             LogUtils.logd(TAG, "onViewReleased");
+            if (mLeftView.getLeft() > -mLeftView.getMeasuredWidth() / 2) {
+                mDragHelper.smoothSlideViewTo(mLeftView, 0, mLeftView.getTop());
+                invalidate();
+            }
             super.onViewReleased(releasedChild, xvel, yvel);
         }
 
