@@ -9,6 +9,7 @@ import com.sola_sky.zyt.linktolove.utils.LogUtils;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.functions.Action1;
 
 public class RxjavaActivity extends AppCompatActivity {
 
@@ -47,5 +48,14 @@ public class RxjavaActivity extends AppCompatActivity {
         });
 
         observable.subscribe(observer);
+
+        Observable.from(new String[]{"lmy", "zyt", "lsk", "zpp", "zss"})
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        LogUtils.logd(TAG, s);
+                    }
+                });
+
     }
 }
