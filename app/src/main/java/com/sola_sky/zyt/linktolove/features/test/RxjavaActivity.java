@@ -23,7 +23,7 @@ public class RxjavaActivity extends AppCompatActivity {
     }
 
     public void testRxjava() {
-        Observer<String> observer = new Observer<String>() {
+        Subscriber<String> observer = new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -48,9 +48,19 @@ public class RxjavaActivity extends AppCompatActivity {
         });
 
         observable.subscribe(observer);
+        observer.unsubscribe();
 
         Observable.from(new String[]{"lmy", "zyt", "lsk", "zpp", "zss"})
                 .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        LogUtils.logd(TAG, s);
+                    }
+                });
+
+        Observable.just("i", "love", "you", "zyt")
+                .subscribe(new Action1<String>() {
+
                     @Override
                     public void call(String s) {
                         LogUtils.logd(TAG, s);
