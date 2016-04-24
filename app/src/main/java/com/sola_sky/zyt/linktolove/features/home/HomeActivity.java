@@ -89,7 +89,8 @@ public class HomeActivity extends BaseActivity implements
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sub1:
-                IntentUtils.startSetting(this);
+            //    IntentUtils.startSetting(this);
+                IntentUtils.startBind(this);
                 break;
             case R.id.sub2:
                 IntentUtils.startDragView(this);
