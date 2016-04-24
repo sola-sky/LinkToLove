@@ -13,7 +13,8 @@ public class MyBindingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMyBindingBinding  binding = DataBindingUtil.setContentView(this, R.layout.activity_my_binding);
+   //     ActivityMyBindingBinding  binding = DataBindingUtil.setContentView(this, R.layout.activity_my_binding);
+        ActivityMyBindingBinding binding = ActivityMyBindingBinding.inflate(getLayoutInflater());
         binding.setName("hhhhh");
     }
 }
