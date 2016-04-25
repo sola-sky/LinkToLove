@@ -5,7 +5,9 @@ import android.content.Intent;
 
 import com.sola_sky.zyt.linktolove.features.home.HomeActivity;
 import com.sola_sky.zyt.linktolove.features.home.MainActivity;
+import com.sola_sky.zyt.linktolove.features.test.BottomSheetActivity;
 import com.sola_sky.zyt.linktolove.features.test.DragActivity;
+import com.sola_sky.zyt.linktolove.features.test.binding.MyBindingActivity;
 import com.sola_sky.zyt.linktolove.features.test.MyDragActivity;
 import com.sola_sky.zyt.linktolove.features.test.MyViewGroupActivity;
 import com.sola_sky.zyt.linktolove.features.userinfo.UserInfoActivity;
@@ -45,6 +47,16 @@ public class IntentUtils {
 
     public static void startDragView(Context context) {
         Intent intent = new Intent(context, MyDragActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startBind(Context context) {
+        Intent intent = new Intent(context, MyBindingActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startBottom(Context context) {
+        Intent intent = new Intent(context, BottomSheetActivity.class);
         context.startActivity(intent);
     }
 }
