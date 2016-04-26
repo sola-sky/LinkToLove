@@ -224,7 +224,7 @@ public class CustomBottomSheet extends ViewGroup {
         @Override
         public int getViewVerticalDragRange(View child) {
             LogUtils.logd(TAG, "getViewVerticalDragRange");
-            return (child == mBottomView ? mBottomView.getMeasuredHeight() : 0);
+            return 0;
         }
 
         @Override
