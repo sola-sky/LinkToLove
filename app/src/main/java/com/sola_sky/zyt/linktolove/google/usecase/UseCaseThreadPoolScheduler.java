@@ -41,11 +41,11 @@ public class UseCaseThreadPoolScheduler implements UseCaseScheduler {
     }
 
     @Override
-    public <T extends UseCase.ResponseValues> void onError(final Error error, final UseCase.UseCaseCallback<T> useCaseCallback) {
+    public <T extends UseCase.ResponseValues> void onError(final UseCase.UseCaseCallback<T> useCaseCallback) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                useCaseCallback.onError(error);
+                useCaseCallback.onError();
             }
         });
     }
