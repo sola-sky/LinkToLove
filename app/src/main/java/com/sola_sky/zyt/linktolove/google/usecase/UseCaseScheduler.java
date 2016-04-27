@@ -8,6 +8,5 @@ public interface UseCaseScheduler {
 
     <T extends UseCase.ResponseValues> void notifyResponse(final T response,
                                                            final UseCase.UseCaseCallback<T> useCaseCallback);
-    <T extends UseCase.ResponseValues> void onError(final Error error,
-                                                    final UseCase.UseCaseCallback<T> useCaseCallback);
+    <T extends UseCase.ResponseValues> void onError(final UseCase.UseCaseCallback<T> useCaseCallback);
 }
