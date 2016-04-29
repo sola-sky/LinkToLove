@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sola_sky.zyt.linktolove.R;
-import com.sola_sky.zyt.linktolove.databinding.ActivityMyBindingBinding;
+import com.sola_sky.zyt.linktolove.TestBinding;
+
 
 public class MyBindingActivity extends AppCompatActivity {
 
@@ -18,7 +19,8 @@ public class MyBindingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMyBindingBinding  binding = DataBindingUtil.setContentView(this, R.layout.activity_my_binding);
+        setContentView(R.layout.activity_my_binding);
+        TestBinding binding = TestBinding.inflate(getLayoutInflater());
       //  ActivityMyBindingBinding binding = ActivityMyBindingBinding.inflate(getLayoutInflater());
         binding.setName("hhhhh");
         taskObservable = new TaskObservable();
