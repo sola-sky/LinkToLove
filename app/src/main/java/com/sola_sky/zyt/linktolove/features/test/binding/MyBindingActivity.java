@@ -12,8 +12,9 @@ import com.sola_sky.zyt.linktolove.databinding.ActivityMyBindingBinding;
 
 public class MyBindingActivity extends AppCompatActivity {
 
-    private Button mBtn;
     private TaskObservable taskObservable;
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,10 +30,15 @@ public class MyBindingActivity extends AppCompatActivity {
 //                taskObservable.setName("Zhang");
 //            }
 //        });
+        binding.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taskObservable.setName("zhang ya...");
+                user.lastName.set("Li Minyi");
+            }
+        });
+        binding.setUser(user);
     }
 
-    public void change(View view) {
-        taskObservable.setName("I Love You Yating");
-    }
 
 }
