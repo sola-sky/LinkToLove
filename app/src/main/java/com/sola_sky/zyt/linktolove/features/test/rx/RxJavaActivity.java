@@ -263,8 +263,55 @@ public class RxJavaActivity extends AppCompatActivity {
                 .take(8);
 
 
-        Observable.just("8")
-                .join()
+        Observable.just("1")
+                .mergeWith(Observable.create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+
+                    }
+                })).subscribe();
+
+        Observable.from(new Integer[]{333, 333})
+                .startWith(5, 2, 0);
+
+        Observable.switchOnNext(Observable.just(Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                subscriber.onNext("dgge");
+                subscriber.onCompleted();
+            }
+        })));
+        
+        Observable.zip(Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                subscriber.onNext("d");
+            }
+        }), Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+
+            }
+        }), new Func2<String, Integer, Object>() {
+            @Override
+            protected Object clone() throws CloneNotSupportedException {
+                return super.clone();
+            }
+
+            @Override
+            public Object call(String s, Integer integer) {
+                return null;
+            }
+        });
+
+
+        Observable.just("3")
+                .onErrorReturn(new Func1<Throwable, String>() {
+                    @Override
+                    public String call(Throwable throwable) {
+                        return "over";
+                    }
+                });
 
     }
 }
