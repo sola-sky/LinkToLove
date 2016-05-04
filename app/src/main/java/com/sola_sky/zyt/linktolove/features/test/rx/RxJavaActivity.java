@@ -13,8 +13,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import rx.Notification;
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -95,7 +98,7 @@ public class RxJavaActivity extends AppCompatActivity {
         Observable.interval(1000, TimeUnit.SECONDS);
 
         Observable.just("2", "3", "5");
-        Observable.just("3","2");
+        Observable.just("3", "2");
         Observable.just("3");
         Observable.just("4", "33").repeat();
         Observable.just("3").repeat(10);
@@ -126,7 +129,7 @@ public class RxJavaActivity extends AppCompatActivity {
         Observable.just("1", "2", "3")
                 .buffer(2);
 
-        Observable.just("1","2", "3")
+        Observable.just("1", "2", "3")
                 .buffer(new Func0<Observable<String>>() {
                     @Override
                     public Observable<String> call() {
@@ -281,7 +284,7 @@ public class RxJavaActivity extends AppCompatActivity {
                 subscriber.onCompleted();
             }
         })));
-        
+
         Observable.zip(Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
@@ -313,5 +316,49 @@ public class RxJavaActivity extends AppCompatActivity {
                     }
                 });
 
+        Observable.just("3")
+                .delaySubscription(1000, TimeUnit.SECONDS);
+
+
+        Observable<String> stringObservable = Observable.just("3")
+                .doOnEach(new Action1<Notification<? super String>>() {
+                    @Override
+                    public void call(Notification<? super String> notification) {
+
+                    }
+                });
+
+        Observable.just("3")
+                .doOnEach(new Action1<Notification<? super String>>() {
+
+                    @Override
+                    public void call(Notification<? super String> notification) {
+
+                    }
+
+                });
+
+        Observable.just("3")
+                .doOnNext(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+
+                    }
+                });
+        Observable.just("3")
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        LogUtils.logd("d", "before emit");
+                    }
+                });
+
+        Observable.just("3")
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+
+                    }
+                });
     }
 }
