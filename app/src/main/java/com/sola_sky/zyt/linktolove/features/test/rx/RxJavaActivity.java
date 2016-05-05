@@ -22,6 +22,8 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.observers.Observers;
+import rx.schedulers.TimeInterval;
+import rx.schedulers.Timestamped;
 
 public class RxJavaActivity extends AppCompatActivity {
 
@@ -357,6 +359,46 @@ public class RxJavaActivity extends AppCompatActivity {
                 .doOnCompleted(new Action0() {
                     @Override
                     public void call() {
+
+                    }
+                });
+
+        Observable.just("f")
+                .timeout(2, TimeUnit.MINUTES);
+        Observable.just("3")
+                .timestamp()
+                .subscribe(new Subscriber<Timestamped<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Timestamped<String> stringTimestamped) {
+
+                    }
+                });
+
+        Observable.just("3", "4")
+                .timeInterval()
+                .subscribe(new Subscriber<TimeInterval<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TimeInterval<String> stringTimeInterval) {
 
                     }
                 });
