@@ -402,5 +402,37 @@ public class RxJavaActivity extends AppCompatActivity {
 
                     }
                 });
+
+        Observable.just("3", "5")
+                .toBlocking()
+                .getIterator();
+
+        Observable.just("3", "5")
+                .toList()
+                .toBlocking()
+                .toFuture();
+
+        Observable.just("3", "3")
+                .toBlocking()
+                .toIterable();
+
+        Observable.just("3", "5")
+                .toMap(new Func1<String, Integer>() {
+                    @Override
+                    public Integer call(String s) {
+                        return Integer.valueOf(s);
+                    }
+                });
+
+        Observable.just("3", "5")
+                .toMultimap(new Func1<String, Integer>() {
+                    @Override
+                    public Integer call(String s) {
+                        return null;
+                    }
+                });
+
+        Observable.just("3")
+                .toSortedList();
     }
 }
