@@ -2,6 +2,7 @@ package com.sola_sky.zyt.linktolove.features.test.rx;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.sola_sky.zyt.linktolove.R;
 import com.sola_sky.zyt.linktolove.utils.LogUtils;
@@ -434,5 +435,118 @@ public class RxJavaActivity extends AppCompatActivity {
 
         Observable.just("3")
                 .toSortedList();
+
+        Observable.just("3", "5")
+                .all(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        return null;
+                    }
+                });
+
+        Observable.just("3")
+                .isEmpty();
+        Observable.just("5")
+                .exists(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        return true;
+                    }
+                });
+
+
+        Observable.just("5")
+                .defaultIfEmpty("ggggg")
+                .subscribe();
+
+        Observable.just("3")
+                .takeUntil(Observable.create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+                        subscriber.onNext("3");
+                    }
+                }));
+
+        Observable.just(1, 2, 3)
+                .count();
+
+        Observable.just(3, 3, 4)
+                .reduce(new Func2<Integer, Integer, Integer>() {
+                    @Override
+                    public Integer call(Integer integer, Integer integer2) {
+                        return null;
+                    }
+                });
+
+        Observable.just("3")
+                .publish()
+                .connect()
+                ;
+
+
+        Observable.just(3)
+                .publish()
+                .refCount()
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        LogUtils.logd("3", "i will");
+                    }
+                });
+
+
+        Observable.just(2)
+                .replay()
+                .publish();
+
+        Observable.just(3)
+                .toBlocking()
+                .next()
+                .iterator();
+
+
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+
+            }
+        })
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        if (isUnsubscribed()) {
+                            LogUtils.logd("d", "nv ren a ");
+                        }
+                    }
+                });
+
+
+        Observable.just("3")
+                .flatMap(new Func1<String, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(String s) {
+                        return "33";
+                    }
+                })
     }
 }
