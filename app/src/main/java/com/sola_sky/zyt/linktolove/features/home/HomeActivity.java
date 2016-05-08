@@ -104,6 +104,9 @@ public class HomeActivity extends BaseActivity implements
             case R.id.user_info:
                 IntentUtils.startUserInfo(this);
                 break;
+            case R.id.test:
+                IntentUtils.startTest(this);
+                break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return false;
