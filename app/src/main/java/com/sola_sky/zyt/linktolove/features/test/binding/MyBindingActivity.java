@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sola_sky.zyt.linktolove.R;
-import com.sola_sky.zyt.linktolove.TestBinding;
 
 
 public class MyBindingActivity extends AppCompatActivity {
@@ -16,31 +15,31 @@ public class MyBindingActivity extends AppCompatActivity {
     private TaskObservable taskObservable;
     private User user;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_binding);
-        TestBinding binding = TestBinding.inflate(getLayoutInflater());
-      //  ActivityMyBindingBinding binding = ActivityMyBindingBinding.inflate(getLayoutInflater());
-        binding.setName("hhhhh");
-        taskObservable = new TaskObservable();
-        binding.setTask(taskObservable);
-//        mBtn = (Button) findViewById(R.id.btn);
-//        mBtn.setOnClickListener(new View.OnClickListener() {
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_my_binding);
+//        TestBinding binding = TestBinding.inflate(getLayoutInflater());
+//      //  ActivityMyBindingBinding binding = ActivityMyBindingBinding.inflate(getLayoutInflater());
+//        binding.setName("hhhhh");
+//        taskObservable = new TaskObservable();
+//        binding.setTask(taskObservable);
+////        mBtn = (Button) findViewById(R.id.btn);
+////        mBtn.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View v) {
+////                taskObservable.setName("Zhang");
+////            }
+////        });
+//        binding.btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                taskObservable.setName("Zhang");
+//                taskObservable.setName("zhang ya...");
+//                user.lastName.set("Li Minyi");
 //            }
 //        });
-        binding.btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                taskObservable.setName("zhang ya...");
-                user.lastName.set("Li Minyi");
-            }
-        });
-        binding.setUser(user);
-    }
+//        binding.setUser(user);
+//    }
 
 
 }
