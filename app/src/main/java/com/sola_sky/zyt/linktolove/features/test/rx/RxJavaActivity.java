@@ -1,8 +1,8 @@
 package com.sola_sky.zyt.linktolove.features.test.rx;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.sola_sky.zyt.linktolove.R;
 import com.sola_sky.zyt.linktolove.utils.LogUtils;
@@ -17,12 +17,15 @@ import java.util.concurrent.TimeoutException;
 import rx.Notification;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.observers.Observers;
+import rx.plugins.RxJavaPlugins;
+import rx.schedulers.Schedulers;
 import rx.schedulers.TimeInterval;
 import rx.schedulers.Timestamped;
 
@@ -545,8 +548,20 @@ public class RxJavaActivity extends AppCompatActivity {
                 .flatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String s) {
-                        return "33";
+                        return Observable.just(s);
                     }
-                })
+                });
+
+        RxJavaPlugins.getInstance();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Handler handler = new Handler();
+                Observable.just("3e", "4")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.from(handler.getLooper()));
+            }
+        }, "i love you");
     }
 }
