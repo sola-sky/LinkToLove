@@ -1,6 +1,8 @@
 package com.sola_sky.zyt.linktolove.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -26,6 +28,14 @@ public class ViewGroupDrag extends ViewGroup {
     private boolean mDragged = false;
     private boolean mEdgeTouched = false;
 
+
+    private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
+    private int mScrimColor = DEFAULT_SCRIM_COLOR;
+    private float mScrimtOpacity;
+    private Paint mScrimPaint = new Paint();
+
+    private float mInitX;
+    private float mInitY;
 
 
 
@@ -115,7 +125,26 @@ public class ViewGroupDrag extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mDragHelper.shouldInterceptTouchEvent(ev);
+        final boolean interceptForDrag = mDragHelper.shouldInterceptTouchEvent(ev);
+
+        boolean interceptForTap = false;
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                final float x = ev.getX();
+                final float y = ev.getY();
+                if (mScrimtOpacity > 0) {
+                    final View child = mDragHelper.findTopChildUnder((int) x, (int) y);
+                    if (child != null && child == mContentView) {
+                        interceptForTap = true;
+                    }
+                }
+                break;
+            }
+            case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    break;
+        }
+        return interceptForDrag | interceptForTap;
     }
 
     @Override
@@ -135,14 +164,23 @@ public class ViewGroupDrag extends ViewGroup {
 //            break;
 //        }
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mInitX = event.getX();
+                mInitY = event.getY();
+                break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (mEdgeTouched && !mDragged) {
-                    MarginLayoutParams lp = (MarginLayoutParams) getChildAt(1).getLayoutParams();
-                    int x = -getChildAt(1).getMeasuredWidth() - lp.rightMargin;
-                    mDragHelper.smoothSlideViewTo(getChildAt(1), x, lp.topMargin
-                            + getPaddingTop());
-                    invalidate();
+                if (!mDragged) {
+                    final View view = mDragHelper.findTopChildUnder((int)mInitX, (int)mInitY);
+                    if ((view != null && view == mContentView) || mEdgeTouched) {
+                        if (getChildAt(1).getRight() > 0) {
+                            MarginLayoutParams lp = (MarginLayoutParams) getChildAt(1).getLayoutParams();
+                            int x = -getChildAt(1).getMeasuredWidth() - lp.rightMargin;
+                            mDragHelper.smoothSlideViewTo(getChildAt(1), x, lp.topMargin
+                                    + getPaddingTop());
+                            invalidate();
+                        }
+                    }
 //                    requestLayout();
                 }
                 mDragged = false;
@@ -154,9 +192,36 @@ public class ViewGroupDrag extends ViewGroup {
 
     @Override
     public void computeScroll() {
+        mScrimtOpacity = mMenuView.getRight() * 1.f / mMenuView.getWidth();
+        mScrimtOpacity = Math.max(0, mScrimtOpacity);
         if (mDragHelper.continueSettling(true)) {
             invalidate();
         }
+    }
+
+    @Override
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        final int height = getHeight();
+        final boolean drawingContent = child == mContentView;
+        int clipLeft = 0, clipRight = getWidth();
+
+        final int restoreCount = canvas.save();
+        if (drawingContent) {
+            clipLeft = Math.max(0, mMenuView.getRight());
+            canvas.clipRect(clipLeft, 0, clipRight, height);
+        }
+        boolean result =  super.drawChild(canvas, child, drawingTime);
+        canvas.restoreToCount(restoreCount);
+
+        if (mScrimtOpacity > 0 && drawingContent) {
+            final int baseAlpha = (mScrimColor & 0xff000000) >>> 24;
+            final int curAlpha = (int) (baseAlpha * mScrimtOpacity);
+            final int color = (curAlpha << 24) | (mScrimColor & 0xffffff);
+            mScrimPaint.setColor(color);
+            canvas.drawRect(clipLeft, 0, clipRight, height, mScrimPaint);
+        }
+
+        return result;
     }
 
     class MyMarginParams extends MarginLayoutParams {
@@ -235,8 +300,11 @@ public class ViewGroupDrag extends ViewGroup {
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-            LogUtils.logd("ViewGroupDrag", "onViewPositionChanged");
             super.onViewPositionChanged(changedView, left, top, dx, dy);
+            LogUtils.logd("ViewGroupDrag", "onViewPositionChanged");
+            mScrimtOpacity = mMenuView.getRight() * 1.f / mMenuView.getWidth();
+            invalidate();
+
         }
 
         @Override
